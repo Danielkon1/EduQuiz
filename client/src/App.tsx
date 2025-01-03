@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <p>Select Option</p>
-      <Button variant='outlined'><a href="/signin">Sign In</a></Button>
+      <Button variant='outlined'><a href="/signup">Sign up</a></Button>
       <br />
       <br />
       <Button variant='outlined'><a href="/user">Enter Existing Game</a></Button>

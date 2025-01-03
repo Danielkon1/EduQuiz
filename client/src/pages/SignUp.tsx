@@ -2,7 +2,7 @@ import { Button, TextField } from "@mui/material";
 import "./design.css";
 import { useState } from "react";
 
-function SignIn() {
+function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -50,4 +50,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;
