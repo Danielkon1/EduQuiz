@@ -1,15 +1,23 @@
 import { Button, TextField } from "@mui/material";
 import "./design.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  useEffect(() => {
+    if (message === "Login successful!" || message === "User registered successfully.") {
+      navigate("/User")
+    }
+  }, [message])
+
+  const handleSignUp = async (type: string) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/signup", {
+      const response = await fetch("http://127.0.0.1:5000/" + type, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -42,10 +50,11 @@ function SignUp() {
       />
       <br />
       <br />
-      <button onClick={handleLogin}>Login</button>
+      <div className="padButtons">
+        <button onClick={() => handleSignUp("login")}>Log In</button>
+        <button onClick={() => handleSignUp("signup")}>Sign Up</button>
+      </div>
       <p>{message}</p>
-
-      <Button variant="contained">Sign In</Button>
     </>
   );
 }

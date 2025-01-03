@@ -12,7 +12,7 @@ function App() {
       <Button variant='outlined'><a href="/signup">Sign up</a></Button>
       <br />
       <br />
-      <Button variant='outlined'><a href="/user">Enter Existing Game</a></Button>
+      <Button variant='outlined'><a href="/game">Enter Existing Game</a></Button>
     </>
   )
 }

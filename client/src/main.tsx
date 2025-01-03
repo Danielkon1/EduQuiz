@@ -4,6 +4,8 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
 import SignUp from "./pages/SignUp.tsx";
+import User from "./pages/User.tsx";
+import Game from "./pages/Game.tsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +15,14 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <SignUp />
+  },
+  {
+    path: '/user',
+    element: <User />
+  },
+  {
+    path: '/game',
+    element: <Game />
   }
 ]);
 
