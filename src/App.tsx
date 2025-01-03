@@ -2,14 +2,17 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { Button } from '@mui/material'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <p>select option</p>
-      <button><a href='/user'>click me</a></button>
+      <p>Select Option</p>
+      <Button variant='outlined'><a href="/signin">Sign In</a></Button>
+      <br />
+      <br />
+      <Button variant='outlined'><a href="/user">Enter Existing Game</a></Button>
     </>
   )
 }
