@@ -19,7 +19,7 @@ def login():
     if not username or not password:
         return jsonify({"status": "failure", "message": "Username and password are required."}), 400
 
-    conn = sqlite3.connect('users.db')
+    conn = sqlite3.connect('./server/users.db')
     cursor = conn.cursor()
     cursor.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
     result = cursor.fetchone()
@@ -45,7 +45,7 @@ def signup():
     password_hash = generate_password_hash(password)
 
     try:
-        conn = sqlite3.connect('users.db')
+        conn = sqlite3.connect('./server/users.db')
         cursor = conn.cursor()
         cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, password_hash))
         conn.commit()

@@ -1,7 +1,10 @@
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+export var correctUserName: "" | string;
+export var correctPassword: "" | string;
 
 function SignUp() {
   const [username, setUsername] = useState("");
@@ -10,10 +13,16 @@ function SignUp() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (message === "Login successful!" || message === "User registered successfully.") {
-      navigate("/User")
+    if (
+      message === "Login successful!" ||
+      message === "User registered successfully."
+    ) {
+      correctUserName = username;
+      correctPassword = password;
+
+      navigate("/User");
     }
-  }, [message])
+  }, [message]);
 
   const handleSignUp = async (type: string) => {
     try {

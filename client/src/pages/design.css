@@ -1,8 +1,8 @@
 .custom-text-field .MuiOutlinedInput-root {
-  color: lightgray; /* Text input color */
+  color: lightgray;
 }
 .custom-text-field .MuiOutlinedInput-root fieldset {
-  border-color: lightgray; /* Border color */
+  border-color: lightgray;
 }
 .custom-text-field .MuiOutlinedInput-root:hover fieldset {
   border-color: lightgray;
@@ -10,17 +10,23 @@
 .custom-text-field .MuiOutlinedInput-root.Mui-focused fieldset {
   border-color: lightgray;
 }
+.ListItemButton {
+  border: 1px solid lightgray !important;
+}
+.ListItemButtonTwo {
+  border-bottom: 1px solid rgb(99, 99, 99) !important;
+}
 .custom-text-field .MuiInputLabel-root {
-  color: lightgray; /* Label color */
+  color: lightgray;
 }
 .custom-text-field .MuiInputLabel-root.Mui-focused {
   color: lightgray;
 }
 
 .padButtons button {
-  margin-right: 10px; /* Adjust the value as needed */
+  margin-right: 10px;
 }
 
 .padButtons button:last-child {
-  margin-right: 0; /* Remove margin for the last button */
+  margin-right: 0;
 }

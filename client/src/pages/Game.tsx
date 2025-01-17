@@ -1,9 +1,5 @@
-
-
 function Game() {
-    return (
-        <p>game page</p>
-    )
+  return <p>game page</p>;
 }
 
-export default Game
+export default Game;
