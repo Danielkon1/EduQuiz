@@ -2,9 +2,10 @@ import { TextField } from "@mui/material";
 import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login, signup } from "../api"; // Import login and signup functions
 
-export var correctUserName: "" | string;
-export var correctPassword: "" | string;
+export var correctUserName: string | null = null;
+export var correctPassword: string | null = null;
 
 function SignUp() {
   const [username, setUsername] = useState("");
@@ -20,41 +21,41 @@ function SignUp() {
       correctUserName = username;
       correctPassword = password;
 
-      navigate("/User");
+      navigate("/User"); // Navigate to the User page after successful login/signup
     }
-  }, [message]);
+  }, [message, username, password, navigate]); // Added dependencies to avoid potential stale closures
 
-  const handleSignUp = async (type: string) => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/" + type, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+  const handleSignUp = async (type: "login" | "signup") => {
+    let response;
 
-      const data = await response.json();
-      setMessage(data.message);
-    } catch (error) {
-      setMessage("Error connecting to the server.");
+    if (type === "login") {
+      response = await login(username, password); // Use the login function from api.ts
+    } else {
+      response = await signup(username, password); // Use the signup function from api.ts
     }
+
+    setMessage(response.message);
   };
 
   return (
     <>
-      <p>enter fields</p>
+      <p>Enter fields</p>
 
       <TextField
-        label="username"
+        label="Username"
         variant="outlined"
         className="custom-text-field"
+        value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <br />
       <br />
       <TextField
-        label="password"
+        label="Password"
         variant="outlined"
         className="custom-text-field"
+        type="password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <br />
@@ -63,7 +64,7 @@ function SignUp() {
         <button onClick={() => handleSignUp("login")}>Log In</button>
         <button onClick={() => handleSignUp("signup")}>Sign Up</button>
       </div>
-      <p>{message}</p>
+      {message && <p>{message}</p>}
     </>
   );
 }
