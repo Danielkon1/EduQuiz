@@ -1,15 +1,16 @@
-import { TextField } from "@mui/material";
-import { useState, useSyncExternalStore } from "react";
+import { List, TextField } from "@mui/material";
+import { useState } from "react";
 import "./design.css";
 
 function GameCreation() {
-  const quiz: {
-    question: string;
-    answer1: string;
-    answer2: string;
-    answer3: string;
-    answer4: string;
-  }[] = [];
+  let quiz: Array<{}> = []
+  // let quiz: {
+  //   question: string,
+  //   answer1: string,
+  //   answer2: string,
+  //   answer3: string,
+  //   answer4: string,
+  // }[] = [];
   const [qNum, setQNum] = useState(1);
   const [question, setQuestion] = useState("");
   const [answer1, setAnswer1] = useState("");
@@ -63,6 +64,8 @@ function GameCreation() {
         className="custom-text-field"
         onChange={(e) => setQuestion(e.target.value)}
       />
+      <br />
+      <br />
 
       {answers.map((field) => (
         <TextField
@@ -75,6 +78,14 @@ function GameCreation() {
 
       <br />
       <button onClick={handleAddQuestion}>Add Question</button>
+
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <button onClick={() => console.log(quiz)}>print quiz</button>
     </>
   );
 }

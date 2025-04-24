@@ -40,3 +40,13 @@
 .read-the-docs {
   color: #888;
 }
+
+.outlinedButtons {
+  border-color: lightgray !important;
+}
+.outlinedButtons > * {
+  color: lightgray;
+}
+.outlinedButtons:hover > *{
+  color: rgb(168, 168, 168) !important;
+}
