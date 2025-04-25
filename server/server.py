@@ -1,7 +1,6 @@
 import socket
 import threading
-import time
-from mongoDB import MongoDB
+from db.mongoDB import MongoDB
 from utils import uri, db_name, users_collection_name, port
 import json
 
@@ -12,7 +11,25 @@ def handle_http_client(client_socket: socket.socket, client_address):
     print(f"HTTP request from {client_address}:\n{request}")
 
     lines = request.split("\r\n")
+    if not lines or len(lines[0].split()) < 3:
+        client_socket.close()
+        return
+
     method, path, _ = lines[0].split()
+
+    # Respond to preflight CORS request
+    if method == "OPTIONS":
+        http_response = (
+            "HTTP/1.1 204 No Content\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
+            "Access-Control-Allow-Headers: Content-Type\r\n"
+            "Content-Length: 0\r\n"
+            "\r\n"
+        )
+        client_socket.send(http_response.encode())
+        client_socket.close()
+        return
 
     if method == "POST" and path == "/add_user":
         body = request.split("\r\n\r\n", 1)[1]
@@ -28,17 +45,20 @@ def handle_http_client(client_socket: socket.socket, client_address):
         http_response = (
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: text/plain\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
             f"Content-Length: {len(response_body)}\r\n"
             "\r\n"
             f"{response_body}"
         )
     else:
+        response_body = "Not Found :("
         http_response = (
             "HTTP/1.1 404 Not Found\r\n"
             "Content-Type: text/plain\r\n"
-            "Content-Length: 13\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            f"Content-Length: {len(response_body)}\r\n"
             "\r\n"
-            "Not Found  :("
+            f"{response_body}"
         )
 
     client_socket.send(http_response.encode())

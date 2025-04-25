@@ -2,10 +2,9 @@ import { TextField } from "@mui/material";
 import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, signup } from "../api"; // Import login and signup functions
 
-export var correctUserName: string | null = null;
-export var correctPassword: string | null = null;
+export let correctUserName: string | null = null;
+export let correctPassword: string | null = null;
 
 function SignUp() {
   const [username, setUsername] = useState("");
@@ -25,16 +24,26 @@ function SignUp() {
     }
   }, [message, username, password, navigate]); // Added dependencies to avoid potential stale closures
 
-  const handleSignUp = async (type: "login" | "signup") => {
-    let response;
-
-    if (type === "login") {
-      response = await login(username, password); // Use the login function from api.ts
-    } else {
-      response = await signup(username, password); // Use the signup function from api.ts
+  const handleSignUp = async (mode: "signup" | "login") => {
+    const endpoint = mode === "signup" ? "/add_user" : "/login"; // you'll need to add login handling later
+    try {
+      const response = await fetch(`http://localhost:4443${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+  
+      const text = await response.text();
+      setMessage(text); // this triggers the useEffect
+    } catch (error) {
+      console.error("Error during sign-up/login:", error);
+      setMessage("Error connecting to the server.");
     }
-
-    setMessage(response.message);
   };
 
   return (
