@@ -13,23 +13,24 @@ class MongoDB:
         return self.db.get_collection(self.users_collection_name)
     
     # checks if user exists in users collection
-    def is_user_in_db(self, username: str):
+    def is_user_in_db(self, username: str, password: str):
         collection = self.get_users_collection()
+        
+        return collection.find_one({"username": username, "password": password}) is not None
 
-        return not(collection.find_one({"username": username}) == None)
     
     # adds user to users collection
-    def insert_user(self, username: str, hash_password: str):
+    def insert_user(self, username: str, password: str):
         if self.is_user_in_db(username):
             return "username already in database"
 
         collection = self.get_users_collection()
-        return collection.insert_one({"username": username, "password": hash_password})
+        return collection.insert_one({"username": username, "password": password})
     
     # removes user from db
-    def remove_user(self, username: str, hash_password: str):
+    def remove_user(self, username: str, password: str):
         if not(self.is_user_in_db):
             return "username not found in database"
 
         collection = self.get_users_collection()
-        return collection.delete_one({"username": username, "password": hash_password})
+        return collection.delete_one({"username": username, "password": password})

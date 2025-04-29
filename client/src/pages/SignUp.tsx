@@ -10,19 +10,19 @@ function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [httpStatus, setHttpStatus] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (
-      message === "Login successful!" ||
-      message === "User registered successfully."
+      httpStatus === "200"
     ) {
       correctUserName = username;
       correctPassword = password;
 
       navigate("/User"); // Navigate to the User page after successful login/signup
     }
-  }, [message, username, password, navigate]); // Added dependencies to avoid potential stale closures
+  }, [message, httpStatus, username, password, navigate]); // Added dependencies to avoid potential stale closures
 
   const handleSignUp = async (mode: "signup" | "login") => {
     const endpoint = mode === "signup" ? "/add_user" : "/login"; // you'll need to add login handling later
@@ -38,7 +38,10 @@ function SignUp() {
         }),
       });
   
+      const status = response.status;
+      console.log(status.toString())
       const text = await response.text();
+      setHttpStatus(status.toString())
       setMessage(text); // this triggers the useEffect
     } catch (error) {
       console.error("Error during sign-up/login:", error);

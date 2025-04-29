@@ -2,6 +2,7 @@ import socket
 import threading
 from db.mongoDB import MongoDB
 from utils import uri, db_name, users_collection_name, port
+from http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response
 import json
 
 database = MongoDB(uri, db_name, users_collection_name)
@@ -17,56 +18,44 @@ def handle_http_client(client_socket: socket.socket, client_address):
 
     method, path, _ = lines[0].split()
 
-    # Respond to preflight CORS request
     if method == "OPTIONS":
-        http_response = (
-            "HTTP/1.1 204 No Content\r\n"
-            "Access-Control-Allow-Origin: *\r\n"
-            "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
-            "Access-Control-Allow-Headers: Content-Type\r\n"
-            "Content-Length: 0\r\n"
-            "\r\n"
-        )
+        http_response = create_options_response()
         client_socket.send(http_response.encode())
         client_socket.close()
         return
 
-    if method == "POST" and path == "/add_user":
+    elif method == "POST" and path == "/add_user":
         body = request.split("\r\n\r\n", 1)[1]
         try:
             data = json.loads(body)
             username = data.get("username")
             password = data.get("password")
             database.insert_user(username, password)
-            response_body = f"User {username} added!"
-        except Exception as e:
-            response_body = "Invalid JSON data"
+            
+            http_response = create_success_response(f"User {username} added!")
+        except:
+            http_response = create_bad_json_response()
 
-        http_response = (
-            "HTTP/1.1 200 OK\r\n"
-            "Content-Type: text/plain\r\n"
-            "Access-Control-Allow-Origin: *\r\n"
-            f"Content-Length: {len(response_body)}\r\n"
-            "\r\n"
-            f"{response_body}"
-        )
+
+
+    elif method =="POST" and path == "/login":
+        body = request.split("\r\n\r\n", 1)[1]
+        try:
+            data = json.loads(body)
+            username = data.get("username")
+            password = data.get("password")
+            if database.is_user_in_db(username, password):
+                http_response = create_success_response(f"User {username} logged in!")
+            else:
+                http_response = create_login_failed_response("Username or password incorrect")
+        except:
+            http_response = create_bad_json_response()
+
     else:
-        response_body = "Not Found :("
-        http_response = (
-            "HTTP/1.1 404 Not Found\r\n"
-            "Content-Type: text/plain\r\n"
-            "Access-Control-Allow-Origin: *\r\n"
-            f"Content-Length: {len(response_body)}\r\n"
-            "\r\n"
-            f"{response_body}"
-        )
-
+        http_response = create_not_found_response()
+        
     client_socket.send(http_response.encode())
     client_socket.close()
-
-    
-    
-
 
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -76,12 +65,7 @@ def main():
 
     while True:
         client_socket, client_address = server_socket.accept()
-
-        # Peek first few bytes to determine if HTTP or custom
-        first_msg = client_socket.recv(4, socket.MSG_PEEK).decode()
-
         threading.Thread(target=handle_http_client, args=(client_socket, client_address), daemon=True).start()
-
 
 if __name__ == "__main__":
     main()
