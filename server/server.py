@@ -1,11 +1,11 @@
 import socket
 import threading
 from db.mongoDB import MongoDB
-from utils import uri, db_name, users_collection_name, port
-from http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response
+from utils import uri, db_name, users_collection_name, quizzes_collection_name, port
+from http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
 import json
 
-database = MongoDB(uri, db_name, users_collection_name)
+database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
 
 def handle_http_client(client_socket: socket.socket, client_address):
     request = client_socket.recv(1024).decode()
@@ -23,6 +23,23 @@ def handle_http_client(client_socket: socket.socket, client_address):
         client_socket.send(http_response.encode())
         client_socket.close()
         return
+    
+    elif method == "GET" and path.startswith("/quiz_list"):
+        try:
+            # Extract query string from the path
+            query_string = path.split("?", 1)[1] if "?" in path else ""
+            query_params = dict(param.split("=") for param in query_string.split("&") if "=" in param)
+            username = query_params.get("username")
+
+            if not username:
+                http_response = create_bad_json_response()
+            else:
+                quizzes = database.get_list_of_quizzes(username)
+                http_response = create_json_success_response(json.dumps(quizzes))
+        except Exception as e:
+            print(f"Error in /quiz_list GET: {e}")
+            http_response = create_bad_json_response()
+
 
     elif method == "POST" and path == "/add_user":
         body = request.split("\r\n\r\n", 1)[1]

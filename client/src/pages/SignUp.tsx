@@ -3,8 +3,8 @@ import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export let correctUserName: string | null = null;
-export let correctPassword: string | null = null;
+export let correctUsername: string = "";
+export let correctPassword: string = "";
 
 function SignUp() {
   const [username, setUsername] = useState("");
@@ -14,18 +14,16 @@ function SignUp() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (
-      httpStatus === "200"
-    ) {
-      correctUserName = username;
+    if (httpStatus === "200") {
+      correctUsername = username;
       correctPassword = password;
 
-      navigate("/User"); // Navigate to the User page after successful login/signup
+      navigate("/User");
     }
-  }, [message, httpStatus, username, password, navigate]); // Added dependencies to avoid potential stale closures
+  }, [message, httpStatus, username, password, navigate]);
 
   const handleSignUp = async (mode: "signup" | "login") => {
-    const endpoint = mode === "signup" ? "/add_user" : "/login"; // you'll need to add login handling later
+    const endpoint = mode === "signup" ? "/add_user" : "/login";
     try {
       const response = await fetch(`http://localhost:4443${endpoint}`, {
         method: "POST",
@@ -37,11 +35,11 @@ function SignUp() {
           password,
         }),
       });
-  
+
       const status = response.status;
-      console.log(status.toString())
+      console.log(status.toString());
       const text = await response.text();
-      setHttpStatus(status.toString())
+      setHttpStatus(status.toString());
       setMessage(text); // this triggers the useEffect
     } catch (error) {
       console.error("Error during sign-up/login:", error);

@@ -1,3 +1,5 @@
+import json
+
 def create_options_response():
     return (
         "HTTP/1.1 204 No Content\r\n"
@@ -12,6 +14,15 @@ def create_success_response(response_body: str):
     return (
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/plain\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        f"Content-Length: {len(response_body)}\r\n"
+        "\r\n"
+        f"{response_body}"
+    )
+def create_json_success_response(response_body: str):
+    return (
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         f"Content-Length: {len(response_body)}\r\n"
         "\r\n"
