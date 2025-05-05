@@ -1,5 +1,3 @@
-import json
-
 def create_options_response():
     return (
         "HTTP/1.1 204 No Content\r\n"
@@ -38,8 +36,6 @@ def create_login_failed_response(response_body: str):
         "\r\n"
         f"{response_body}"
     )
-
-
 
 def create_not_found_response():
     response_body = "Not Found :("

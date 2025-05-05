@@ -9,7 +9,7 @@ database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
 
 def handle_http_client(client_socket: socket.socket, client_address):
     request = client_socket.recv(1024).decode()
-    print(f"HTTP request from {client_address}:\n{request}")
+    print(f"\n\nHTTP request from {client_address}:\n{request}\n\n")
 
     lines = request.split("\r\n")
     if not lines or len(lines[0].split()) < 3:
@@ -18,15 +18,33 @@ def handle_http_client(client_socket: socket.socket, client_address):
 
     method, path, _ = lines[0].split()
 
+    print("----------------------", method, ".........", path)
+
     if method == "OPTIONS":
         http_response = create_options_response()
         client_socket.send(http_response.encode())
         client_socket.close()
         return
     
+    elif method == "POST" and path.startswith("/start_quiz"):
+        body = request.split("\r\n\r\n", 1)[1]
+        try:
+            data = json.loads(body)
+            quizName = data.get("quizName")
+            username = data.get("username")
+
+            code, content = database.create_game(username, quizName)
+            json_response = json.loads(content)
+            json_response.insert(0, {"code": code })
+
+            http_response = create_json_success_response(json.dumps(json_response))
+        except:
+            http_response = create_bad_json_response()
+
+
+    
     elif method == "GET" and path.startswith("/quiz_list"):
         try:
-            # Extract query string from the path
             query_string = path.split("?", 1)[1] if "?" in path else ""
             query_params = dict(param.split("=") for param in query_string.split("&") if "=" in param)
             username = query_params.get("username")

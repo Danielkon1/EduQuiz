@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-
+import random
+import string
 
 class MongoDB:
     # connects to db and creates instance
@@ -13,9 +14,9 @@ class MongoDB:
     def get_users_collection(self):
         return self.db.get_collection(self.users_collection_name)
     
-    # returns the collection that stores the quizzes for all users
-    def get_quizzes_collection(self):
-        return self.db.get_collection(self.quizzes_collection_name)
+    # returns the collection that stores the quizzes for specific user
+    def get_user_quizzes_collection(self, username: str):
+        return self.db.get_collection(username)
     
     # checks if user exists in users collection
     def is_user_in_db(self, username: str, password: str):
@@ -25,16 +26,34 @@ class MongoDB:
 
     # get list of quizzes for user
     def get_list_of_quizzes(self, username: str):
-        collection = self.get_quizzes_collection()
-        user_doc = collection.find_one({"username": username})
+        collection = self.get_user_quizzes_collection(username)
+        quizzes_cursor = collection.find({}, {"_id": 0, "name": 1})  # Only get 'name'
 
-        if not user_doc:
-            return []
-
-        quiz_names = [key for key in user_doc.keys() if key not in ["_id", "username"]]
+        quiz_names = [doc["name"] for doc in quizzes_cursor if "name" in doc]
         return quiz_names
 
 
+    # "creates" a new game, returns code and content (questions)
+    def create_game(self, username: str, quizName: str):
+        collection = self.get_user_quizzes_collection(username)
+        print("1")
+        chars = string.ascii_uppercase + string.digits
+        code = ''.join(random.choices(chars, k=6))
+        print("2")
+
+        collection.update_one(
+            {"name": quizName},
+            {"$set": {"code": code}}
+        )
+        print("3")
+
+        doc = collection.find_one({"name": quizName})
+        print("4")
+
+        content = doc.get("content")
+        print("5")
+
+        return code, content
 
     
     # adds user to users collection
