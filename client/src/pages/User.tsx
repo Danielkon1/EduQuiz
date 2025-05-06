@@ -1,10 +1,20 @@
-import { Collapse, List, ListItemButton, ListItemText } from "@mui/material";
-import { correctPassword, correctUsername } from "./SignUp";
+import {
+  Collapse,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
+import { user } from "./Signup";
 import { useState } from "react";
 import "./design.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import HomeIcon from "@mui/icons-material/Home";
 
 function User() {
+  const navigate = useNavigate();
+
   type QuizCode = { code: string };
   type QuizQuestion = {
     question: string;
@@ -23,9 +33,7 @@ function User() {
   );
 
   const getQuizzes = async () => {
-    const endpoint = `/quiz_list?username=${encodeURIComponent(
-      correctUsername
-    )}`;
+    const endpoint = `/quiz_list?username=${encodeURIComponent(user.username)}`;
     try {
       const response = await fetch(`http://localhost:4443${endpoint}`, {
         method: "GET",
@@ -70,41 +78,59 @@ function User() {
     }
   };
 
+  // TODO: delete
+  // useEffect(() => {
+  //   Signup.correctUsername = "daniel";
+  // }, []);
+
   return (
     <>
+      <div className="stickTopLeft">
+        <IconButton
+          onClick={() => {
+            navigate("/signup");
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          <HomeIcon />
+        </IconButton>
+      </div>
       {(!isInQuiz && (
         <>
-          <h3>Welcome, {correctUsername}</h3>
-          <Link to={"/create-game"}>
-            <button>Create Game</button>
-          </Link>
-          <p>
-            password: {correctPassword}, userName: {correctUsername}
-          </p>
+          <h2 className="stickTop">Welcome, {user.username}</h2>
           <List className="ListItemButton">
             <ListItemButton
-              className="ListItemButtonTwo"
               onClick={() => setOpen(!open)}
             >
-              <ListItemText primary="open quizzes" onClick={getQuizzes} />
+              <ListItemText primary="open quizzes" onClick={getQuizzes} sx={{ color: "#E0E0E0" }}/>
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <List disablePadding>
                 {quizList.map((quizName, index) => (
                   <ListItemButton
                     key={index}
-                    className="ListItemButtonTwo"
                     onClick={() => {
                       // console.log(`Selected quiz: ${quizName}`);
-                      startQuiz(quizName, correctUsername);
+                      startQuiz(quizName, user.username);
                     }}
                   >
-                    <ListItemText primary={quizName} />
+                    <ListItemText primary={quizName} sx={{ color: "#E0E0E0" }} />
                   </ListItemButton>
                 ))}
               </List>
             </Collapse>
           </List>
+          <br />
+          <br />
+          <Link to={"/create-game"}>
+            <button>Create Game</button>
+          </Link>
         </>
       )) || (
         <>
@@ -117,6 +143,8 @@ function User() {
         </>
       )}
 
+      <br />
+      <br />
       <button onClick={() => setIsInQuiz(!isInQuiz)}>
         change is in quiz mode
       </button>

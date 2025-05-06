@@ -6,6 +6,7 @@ from http_utils import create_options_response, create_success_response, create_
 import json
 
 database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
+active_quizzes = []
 
 def handle_http_client(client_socket: socket.socket, client_address):
     request = client_socket.recv(1024).decode()
@@ -34,6 +35,7 @@ def handle_http_client(client_socket: socket.socket, client_address):
             username = data.get("username")
 
             code, content = database.create_game(username, quizName)
+            active_quizzes.append(code)
             json_response = json.loads(content)
             json_response.insert(0, {"code": code })
 
@@ -65,9 +67,13 @@ def handle_http_client(client_socket: socket.socket, client_address):
             data = json.loads(body)
             username = data.get("username")
             password = data.get("password")
-            database.insert_user(username, password)
             
-            http_response = create_success_response(f"User {username} added!")
+            insertion_result = database.insert_user(username, password)
+            
+            if insertion_result == "username already in database":
+                http_response = create_login_failed_response("username already exists")
+            else:
+                http_response = create_success_response(f"User {username} added!")
         except:
             http_response = create_bad_json_response()
 

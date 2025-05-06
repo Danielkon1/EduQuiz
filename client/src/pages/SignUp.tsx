@@ -3,8 +3,11 @@ import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export let correctUsername: string = "";
-export let correctPassword: string = "";
+
+export const user = {
+  username: "",
+  password: ""
+}
 
 function SignUp() {
   const [username, setUsername] = useState("");
@@ -15,8 +18,8 @@ function SignUp() {
 
   useEffect(() => {
     if (httpStatus === "200") {
-      correctUsername = username;
-      correctPassword = password;
+      user.username = username;
+      user.password = password
 
       navigate("/User");
     }

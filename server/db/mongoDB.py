@@ -19,6 +19,11 @@ class MongoDB:
         return self.db.get_collection(username)
     
     # checks if user exists in users collection
+    def is_user_in_db(self, username: str):
+        collection = self.get_users_collection()
+        
+        return collection.find_one({"username": username}) is not None
+    
     def is_user_in_db(self, username: str, password: str):
         collection = self.get_users_collection()
         
@@ -27,7 +32,7 @@ class MongoDB:
     # get list of quizzes for user
     def get_list_of_quizzes(self, username: str):
         collection = self.get_user_quizzes_collection(username)
-        quizzes_cursor = collection.find({}, {"_id": 0, "name": 1})  # Only get 'name'
+        quizzes_cursor = collection.find({}, {"_id": 0, "name": 1})
 
         quiz_names = [doc["name"] for doc in quizzes_cursor if "name" in doc]
         return quiz_names
@@ -36,33 +41,31 @@ class MongoDB:
     # "creates" a new game, returns code and content (questions)
     def create_game(self, username: str, quizName: str):
         collection = self.get_user_quizzes_collection(username)
-        print("1")
         chars = string.ascii_uppercase + string.digits
         code = ''.join(random.choices(chars, k=6))
-        print("2")
 
         collection.update_one(
             {"name": quizName},
             {"$set": {"code": code}}
         )
-        print("3")
 
         doc = collection.find_one({"name": quizName})
-        print("4")
+        print(doc.get("code"))
 
         content = doc.get("content")
-        print("5")
 
         return code, content
 
     
     # adds user to users collection
     def insert_user(self, username: str, password: str):
-        if self.is_user_in_db(username, password):
+        if self.is_user_in_db(username):
             return "username already in database"
 
+        self.db.create_collection(name=username)
         collection = self.get_users_collection()
         return collection.insert_one({"username": username, "password": password})
+    
     # removes user from db
     def remove_user(self, username: str, password: str):
         if not(self.is_user_in_db):
