@@ -1,5 +1,7 @@
 import {
+  AppBar,
   Collapse,
+  Grid2,
   IconButton,
   List,
   ListItemButton,
@@ -85,22 +87,28 @@ function User() {
 
   return (
     <>
-      <div className="stickTopLeft">
-        <IconButton
-          onClick={() => {
-            navigate("/signup");
-          }}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          <HomeIcon />
-        </IconButton>
-      </div>
+      <AppBar className="userAppBar">
+        <div className="appBarContent">
+          <div className="leftContent">
+            <div className="stickTopLeft">
+              <IconButton onClick={() => navigate("/signup")}>
+                <ArrowBackIcon />
+              </IconButton>
+              <IconButton onClick={() => navigate("/")}>
+                <HomeIcon />
+              </IconButton>
+            </div>
+          </div>
+          
+          <h2>Daniel's kahoot - Welcome, {user.username}</h2>
+
+          <Link to="/create-game">
+            <button>Create Game</button>
+          </Link>
+        </div>
+      </AppBar>
+
+
       {(!isInQuiz && (
         <>
           <h2 className="stickTop">Welcome, {user.username}</h2>
@@ -128,9 +136,6 @@ function User() {
           </List>
           <br />
           <br />
-          <Link to={"/create-game"}>
-            <button>Create Game</button>
-          </Link>
         </>
       )) || (
         <>

@@ -1,9 +1,12 @@
 import "./App.css";
-import { Button } from "@mui/material";
+import { AppBar, Button } from "@mui/material";
 
 function App() {
   return (
     <>
+      <AppBar>
+        <h2>Daniel's kahoot - Home</h2>
+      </AppBar>
       <h2>Welcome to Daniel's kahoot</h2>
       <p>Select Option</p>
       <Button variant="outlined" className="outlinedButtons">

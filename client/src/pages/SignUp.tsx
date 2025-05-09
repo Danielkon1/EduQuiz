@@ -1,12 +1,12 @@
-import { TextField } from "@mui/material";
+import { AppBar, TextField } from "@mui/material";
 import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
 export const user = {
-  username: "",
-  password: ""
+  username: "DefaultUser",
+  password: "DefaultPassword"
 }
 
 function SignUp() {
@@ -52,32 +52,38 @@ function SignUp() {
 
   return (
     <>
-      <p>Enter fields</p>
+      <AppBar>
+        <h2>Daniel's kahoot - Signup/login</h2>
+      </AppBar>
+      <div className="signupPageCard">
 
-      <TextField
-        label="Username"
-        variant="outlined"
-        className="custom-text-field"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <br />
-      <br />
-      <TextField
-        label="Password"
-        variant="outlined"
-        className="custom-text-field"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br />
-      <br />
-      <div className="padButtons">
-        <button onClick={() => handleSignUp("login")}>Log In</button>
-        <button onClick={() => handleSignUp("signup")}>Sign Up</button>
+        <p>Enter fields</p>
+
+        <TextField
+          label="Username"
+          variant="outlined"
+          className="custom-text-field"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <br />
+        <br />
+        <TextField
+          label="Password"
+          variant="outlined"
+          className="custom-text-field"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
+        <br />
+        <div className="padButtons">
+          <button onClick={() => handleSignUp("login")}>Log In</button>
+          <button onClick={() => handleSignUp("signup")}>Sign Up</button>
+        </div>
+        {message && <p>{message}</p>}
       </div>
-      {message && <p>{message}</p>}
     </>
   );
 }

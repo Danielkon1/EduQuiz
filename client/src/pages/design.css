@@ -29,15 +29,43 @@
   margin-right: 0;
 }
 
-.stickTopLeft {
-  position: fixed;
-  top: 2%;
-  left: 2%;
-  border: 1px solid darkgray !important;
-  border-radius: 5%;
-}
 
 .stickTop {
   position: fixed;
   top: 2%;
+}
+
+.signupPageCard {
+  background-color: #494949;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  margin: auto;
+  margin-top: 10vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.userAppBar {
+  padding: 0.25rem 0.5rem;
+  min-height: unset;
+}
+
+
+.appBarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.leftContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stickTopLeft {
+  display: flex;
+  gap: 0.5rem;
 }

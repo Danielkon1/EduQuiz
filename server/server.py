@@ -26,7 +26,7 @@ def handle_http_client(client_socket: socket.socket, client_address):
         client_socket.send(http_response.encode())
         client_socket.close()
         return
-    
+
     elif method == "POST" and path.startswith("/start_quiz"):
         body = request.split("\r\n\r\n", 1)[1]
         try:
@@ -35,7 +35,7 @@ def handle_http_client(client_socket: socket.socket, client_address):
             username = data.get("username")
 
             code, content = database.create_game(username, quizName)
-            active_quizzes.append(code)
+            active_quizzes.append([quizName, code])
             json_response = json.loads(content)
             json_response.insert(0, {"code": code })
 
@@ -44,7 +44,7 @@ def handle_http_client(client_socket: socket.socket, client_address):
             http_response = create_bad_json_response()
 
 
-    
+
     elif method == "GET" and path.startswith("/quiz_list"):
         try:
             query_string = path.split("?", 1)[1] if "?" in path else ""
@@ -99,6 +99,7 @@ def handle_http_client(client_socket: socket.socket, client_address):
     client_socket.close()
 
 def main():
+    active_quizzes = []
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("0.0.0.0", port))
     server_socket.listen()
@@ -106,6 +107,7 @@ def main():
 
     while True:
         client_socket, client_address = server_socket.accept()
+        print("active quizzes --------- ", active_quizzes)
         threading.Thread(target=handle_http_client, args=(client_socket, client_address), daemon=True).start()
 
 if __name__ == "__main__":
