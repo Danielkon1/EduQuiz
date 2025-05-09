@@ -69,3 +69,36 @@
   display: flex;
   gap: 0.5rem;
 }
+
+.quizScrollContainer {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.quizGrid {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.quizColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quizItem {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  width: 150px;
+  transition: background-color 0.2s ease;
+}
+
+.quizItem:hover {
+  background-color: #3a3a3a;
+}

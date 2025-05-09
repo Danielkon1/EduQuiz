@@ -1,7 +1,7 @@
 import {
   AppBar,
+  Button,
   Collapse,
-  Grid2,
   IconButton,
   List,
   ListItemButton,
@@ -112,28 +112,42 @@ function User() {
       {(!isInQuiz && (
         <>
           <h2 className="stickTop">Welcome, {user.username}</h2>
-          <List className="ListItemButton">
-            <ListItemButton
-              onClick={() => setOpen(!open)}
-            >
-              <ListItemText primary="open quizzes" onClick={getQuizzes} sx={{ color: "#E0E0E0" }}/>
-            </ListItemButton>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <List disablePadding>
-                {quizList.map((quizName, index) => (
-                  <ListItemButton
-                    key={index}
-                    onClick={() => {
-                      // console.log(`Selected quiz: ${quizName}`);
-                      startQuiz(quizName, user.username);
-                    }}
-                  >
-                    <ListItemText primary={quizName} sx={{ color: "#E0E0E0" }} />
-                  </ListItemButton>
+
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (!open) {
+                setOpen(!open);
+              }
+              getQuizzes();
+            }}
+            sx={{ marginBottom: "1rem" }}
+          >
+            Load Quizzes
+          </Button>
+
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <div className="quizScrollContainer">
+              <div className="quizGrid">
+                {Array.from({ length: Math.ceil(quizList.length / 5) }).map((_, colIndex) => (
+                  <div className="quizColumn" key={colIndex}>
+                    {quizList
+                      .slice(colIndex * 5, colIndex * 5 + 5)
+                      .map((quizName, index) => (
+                        <div
+                          key={index}
+                          className="quizItem"
+                          onClick={() => startQuiz(quizName, user.username)}
+                        >
+                          {quizName}
+                        </div>
+                      ))}
+                  </div>
                 ))}
-              </List>
-            </Collapse>
-          </List>
+              </div>
+            </div>
+          </Collapse>
+
           <br />
           <br />
         </>
