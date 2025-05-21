@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import random
 import string
+from utils import status_codes
 
 class MongoDB:
     # connects to db and creates instance
@@ -46,15 +47,41 @@ class MongoDB:
 
         collection.update_one(
             {"name": quizName},
-            {"$set": {"code": code}}
+            {"$set": {"code": code, "status": "1"}}
         )
 
         doc = collection.find_one({"name": quizName})
         print(doc.get("code"))
 
+        
         content = doc.get("content")
 
         return code, content
+
+    # "lets" a player join a game. returns true if the game is currently waiting for players, and false if not
+    def join_game(self, gameCode: str):
+        for collection_name in self.db.list_collection_names():
+            if collection_name == self.users_collection_name:
+                continue
+
+            collection = self.db.get_collection(collection_name)
+            quiz = collection.find_one({"code": gameCode, "status": "1"})
+            if quiz is not None:
+                return True
+        
+        return False
+
+    # returns status of a game (used for example for clients to know if their game has started)
+    def get_game_status(self, gameCode: str):
+        for collection_name in self.db.list_collection_names():
+            if collection_name == self.users_collection_name:
+                continue
+
+            collection = self.db.get_collection(collection_name)
+            quiz = collection.find_one({"code": gameCode})
+            if quiz is not None:
+                return quiz.get("status")
+        return "not found"
 
     
     # adds user to users collection
@@ -73,3 +100,4 @@ class MongoDB:
 
         collection = self.get_users_collection()
         return collection.delete_one({"username": username, "password": password})
+    

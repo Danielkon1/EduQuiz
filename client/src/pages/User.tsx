@@ -3,9 +3,6 @@ import {
   Button,
   Collapse,
   IconButton,
-  List,
-  ListItemButton,
-  ListItemText,
 } from "@mui/material";
 import { user } from "./Signup";
 import { useState } from "react";
@@ -70,8 +67,8 @@ function User() {
 
       const status = response.status;
       console.log("status - " + status);
-      const text = await response.json();
-      setQuizContent(text);
+      const content = await response.json();
+      setQuizContent(content);
       console.log(quizContent);
       setIsInQuiz(true);
     } catch (error) {

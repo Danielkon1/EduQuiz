@@ -6,7 +6,6 @@ from http_utils import create_options_response, create_success_response, create_
 import json
 
 database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
-active_quizzes = []
 
 def handle_http_client(client_socket: socket.socket, client_address):
     request = client_socket.recv(1024).decode()
@@ -35,7 +34,6 @@ def handle_http_client(client_socket: socket.socket, client_address):
             username = data.get("username")
 
             code, content = database.create_game(username, quizName)
-            active_quizzes.append([quizName, code])
             json_response = json.loads(content)
             json_response.insert(0, {"code": code })
 
@@ -58,6 +56,23 @@ def handle_http_client(client_socket: socket.socket, client_address):
                 http_response = create_json_success_response(json.dumps(quizzes))
         except Exception as e:
             print(f"Error in /quiz_list GET: {e}")
+            http_response = create_bad_json_response()
+
+
+    elif method == "GET" and path.startswith("/game_status"):
+        try:
+            query_string = path.split("?", 1)[1] if "?" in path else ""
+            query_params = dict(param.split("=") for param in query_string.split("&") if "=" in param)
+            code = query_params.get("code")
+
+
+            game_status = database.get_game_status(code)
+            if game_status == "not found":
+                http_response = create_not_found_response()
+            else:
+                http_response = create_success_response(game_status)
+        except Exception as e:
+            print(f"Error in /game_status GET: {e}")
             http_response = create_bad_json_response()
 
 
@@ -89,6 +104,17 @@ def handle_http_client(client_socket: socket.socket, client_address):
                 http_response = create_success_response(f"User {username} logged in!")
             else:
                 http_response = create_login_failed_response("Username or password incorrect")
+        except:
+            http_response = create_bad_json_response()
+    
+    elif method =="POST" and path == "/join_game":
+        body = request.split("\r\n\r\n", 1)[1]
+        try:
+            data = json.loads(body)
+            gameCode = data.get("gameCode")
+
+            
+            http_response = create_success_response(str(database.join_game(gameCode)))
         except:
             http_response = create_bad_json_response()
 
