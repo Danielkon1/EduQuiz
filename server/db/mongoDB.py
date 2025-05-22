@@ -20,7 +20,7 @@ class MongoDB:
         return self.db.get_collection(username)
     
     # checks if user exists in users collection
-    def is_user_in_db(self, username: str):
+    def is_username_in_db(self, username: str):
         collection = self.get_users_collection()
         
         return collection.find_one({"username": username}) is not None
@@ -40,17 +40,17 @@ class MongoDB:
 
 
     # "creates" a new game, returns code and content (questions)
-    def create_game(self, username: str, quizName: str):
+    def create_game(self, username: str, quiz_name: str):
         collection = self.get_user_quizzes_collection(username)
         chars = string.ascii_uppercase + string.digits
         code = ''.join(random.choices(chars, k=6))
 
         collection.update_one(
-            {"name": quizName},
+            {"name": quiz_name},
             {"$set": {"code": code, "status": "1"}}
         )
 
-        doc = collection.find_one({"name": quizName})
+        doc = collection.find_one({"name": quiz_name})
         print(doc.get("code"))
 
         
@@ -86,7 +86,7 @@ class MongoDB:
     
     # adds user to users collection
     def insert_user(self, username: str, password: str):
-        if self.is_user_in_db(username):
+        if self.is_username_in_db(username):
             return "username already in database"
 
         self.db.create_collection(name=username)
@@ -95,7 +95,7 @@ class MongoDB:
     
     # removes user from db
     def remove_user(self, username: str, password: str):
-        if not(self.is_user_in_db):
+        if not(self.is_user_in_db(username, password)):
             return "username not found in database"
 
         collection = self.get_users_collection()
