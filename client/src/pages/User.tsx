@@ -10,9 +10,11 @@ import "./design.css";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
+import { postRequest, ResponseType } from "../api";
 
 function User() {
   const navigate = useNavigate();
+  
 
   type QuizCode = { code: string };
   type QuizQuestion = {
@@ -52,36 +54,19 @@ function User() {
   };
 
   const startQuiz = async (quizName: string, username: string) => {
-    const endpoint = `/start_quiz`;
     try {
-      const response = await fetch(`http://localhost:4443${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          quizName,
-          username,
-        }),
-      });
+      const endpoint = `/start_quiz`;
+      const data = { quizName, username };
+      const returnType = ResponseType.JSON;
 
-      const status = response.status;
-      console.log("status - " + status);
-      const content = await response.json();
+      const content = await postRequest(endpoint, data, returnType)
+
       setQuizContent(content);
-      console.log(quizContent);
       setIsInQuiz(true);
     } catch (error) {
       console.error("Error during start_quiz:", error);
-      // setMessage("Error connecting to the server.");
     }
   };
-
-  // TODO: delete
-  // useEffect(() => {
-  //   Signup.correctUsername = "daniel";
-  // }, []);
-
   return (
     <>
       <AppBar className="userAppBar">

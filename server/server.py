@@ -4,12 +4,13 @@ from db.mongoDB import MongoDB
 from utils import uri, db_name, users_collection_name, quizzes_collection_name, port
 from http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
 import json
+from crypto_utils import decrypt_aes_gcm
 
 database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
 
 def handle_http_client(client_socket: socket.socket, client_address):
     request = client_socket.recv(1024).decode()
-    print(f"\n\nHTTP request from {client_address}:\n{request}\n\n")
+    print(f"\n\nHTTP request from {client_address}:\n\n")
 
     lines = request.split("\r\n")
     if not lines or len(lines[0].split()) < 3:
@@ -18,7 +19,6 @@ def handle_http_client(client_socket: socket.socket, client_address):
 
     method, path, _ = lines[0].split()
 
-    print("----------------------", method, ".........", path)
 
     if method == "OPTIONS":
         http_response = create_options_response()
@@ -29,7 +29,9 @@ def handle_http_client(client_socket: socket.socket, client_address):
     elif method == "POST" and path.startswith("/start_quiz"):
         body = request.split("\r\n\r\n", 1)[1]
         try:
-            data = json.loads(body)
+            encrypted_data = json.loads(body)
+            data = decrypt_aes_gcm(encrypted_data)
+
             quizName = data.get("quizName")
             username = data.get("username")
 
@@ -79,7 +81,8 @@ def handle_http_client(client_socket: socket.socket, client_address):
     elif method == "POST" and path == "/add_user":
         body = request.split("\r\n\r\n", 1)[1]
         try:
-            data = json.loads(body)
+            encrypted_data = json.loads(body)
+            data = decrypt_aes_gcm(encrypted_data)
             username = data.get("username")
             password = data.get("password")
             
@@ -97,7 +100,8 @@ def handle_http_client(client_socket: socket.socket, client_address):
     elif method =="POST" and path == "/login":
         body = request.split("\r\n\r\n", 1)[1]
         try:
-            data = json.loads(body)
+            encrypted_data = json.loads(body)
+            data = decrypt_aes_gcm(encrypted_data)
             username = data.get("username")
             password = data.get("password")
             if database.is_user_in_db(username, password):
@@ -110,7 +114,9 @@ def handle_http_client(client_socket: socket.socket, client_address):
     elif method =="POST" and path == "/join_game":
         body = request.split("\r\n\r\n", 1)[1]
         try:
-            data = json.loads(body)
+            encrypted_data = json.loads(body)
+            data = decrypt_aes_gcm(encrypted_data)
+
             gameCode = data.get("gameCode")
 
             
@@ -125,7 +131,6 @@ def handle_http_client(client_socket: socket.socket, client_address):
     client_socket.close()
 
 def main():
-    active_quizzes = []
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("0.0.0.0", port))
     server_socket.listen()
@@ -133,7 +138,6 @@ def main():
 
     while True:
         client_socket, client_address = server_socket.accept()
-        print("active quizzes --------- ", active_quizzes)
         threading.Thread(target=handle_http_client, args=(client_socket, client_address), daemon=True).start()
 
 if __name__ == "__main__":

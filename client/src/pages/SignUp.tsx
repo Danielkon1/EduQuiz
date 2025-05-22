@@ -2,6 +2,7 @@ import { AppBar, TextField } from "@mui/material";
 import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { postRequest, ResponseType } from "../api";
 
 
 export const user = {
@@ -26,24 +27,15 @@ function SignUp() {
   }, [message, httpStatus, username, password, navigate]);
 
   const handleSignUp = async (mode: "signup" | "login") => {
-    const endpoint = mode === "signup" ? "/add_user" : "/login";
     try {
-      const response = await fetch(`http://localhost:4443${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
+      const endpoint = mode === "signup" ? "/add_user" : "/login";
+      const data = { username, password };
+      const returnType = ResponseType.TEXT;
 
-      const status = response.status;
-      console.log(status.toString());
-      const text = await response.text();
-      setHttpStatus(status.toString());
-      setMessage(text); // this triggers the useEffect
+      const content = await postRequest(endpoint, data, returnType)
+
+      setHttpStatus("200");
+      setMessage(content);
     } catch (error) {
       console.error("Error during sign-up/login:", error);
       setMessage("Error connecting to the server.");

@@ -14,3 +14,5 @@ status_codes = {
 address = 'localhost'
 port = 4443
 
+encryption_key = b"2200333911532491"
+

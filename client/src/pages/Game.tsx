@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import "./design.css";
+import { postRequest, ResponseType } from "../api";
 
 function Game() {
   const [gameCode, setGameCode] = useState("");
@@ -9,22 +10,14 @@ function Game() {
   const intervalRef = useRef<number | null>(null);
 
   const joinGame = async (gameCode: string) => {
-    const endpoint = `/join_game`;
     try {
-      const response = await fetch(`http://localhost:4443${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          gameCode,
-        }),
-      });
+      const endpoint = `/join_game`;
+      const data = { gameCode };
+      const returnType = ResponseType.TEXT;
 
-      const status = response.status;
-      console.log(status);
-      const text = await response.text();
-      setHttpResponse(text);
+      const content = await postRequest(endpoint, data, returnType)
+
+      setHttpResponse(content);
     } catch (error) {
       console.error("Error during join_game:", error);
     }
