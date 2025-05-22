@@ -1,10 +1,10 @@
 import socket
 import threading
 from db.mongoDB import MongoDB
-from utils import uri, db_name, users_collection_name, quizzes_collection_name, port
-from http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
+from utilities.utils import uri, db_name, users_collection_name, quizzes_collection_name, port
+from utilities.http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
 import json
-from crypto_utils import decrypt_aes_gcm
+from utilities.crypto_utils import decrypt_aes_gcm
 
 database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
 

@@ -32,7 +32,6 @@ export const postRequest = async (endpoint: string, data: object, responseType: 
     else {
         throw new Error(`Unsupported response type: ${responseType}`);
     }
-    return await response.text();
   } catch (error) {
     console.error(`Error during post request to ${endpoint}:`, error);
     throw error;

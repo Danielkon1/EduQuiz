@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import random
 import string
-from utils import status_codes
+from utilities.utils import status_codes
 
 class MongoDB:
     # connects to db and creates instance
