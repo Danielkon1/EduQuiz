@@ -43,11 +43,11 @@ def handle_http_request(method: str, path: str, request: str):
                 encrypted_data = json.loads(body)
                 data = decrypt_aes_gcm(encrypted_data)
 
-                if path.startswith("/start_quiz"):
+                if path.startswith("/open_quiz"):
                     quiz_name = data.get("quizName")
                     username = data.get("username")
 
-                    code, content = database.create_game(username, quiz_name)
+                    code, content = database.create_game_queue(username, quiz_name)
                     json_response = json.loads(content)
                     json_response.insert(0, {"code": code })
 
@@ -77,6 +77,14 @@ def handle_http_request(method: str, path: str, request: str):
                     gameCode = data.get("gameCode")
 
                     http_response = create_success_response(str(database.join_game(gameCode)))
+                
+                elif path.startswith("/start_game"):
+                    quiz_name = data.get("quizName")
+                    username = data.get("username")
+
+                    database.start_game(quiz_name, username)
+
+                    http_response = create_success_response("ok")
                 
                 else:
                     http_response = create_not_found_response()

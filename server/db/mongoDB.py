@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 import random
 import string
-from utilities.utils import status_codes
 
 class MongoDB:
     # connects to db and creates instance
@@ -40,23 +39,32 @@ class MongoDB:
 
 
     # "creates" a new game, returns code and content (questions)
-    def create_game(self, username: str, quiz_name: str):
+    def create_game_queue(self, username: str, quiz_name: str):
         collection = self.get_user_quizzes_collection(username)
         chars = string.ascii_uppercase + string.digits
         code = ''.join(random.choices(chars, k=6))
 
         collection.update_one(
             {"name": quiz_name},
-            {"$set": {"code": code, "status": "1"}}
+            {"$set": {"code": code, "status": "-1"}}
         )
 
         doc = collection.find_one({"name": quiz_name})
-        print(doc.get("code"))
 
         
         content = doc.get("content")
 
         return code, content
+    
+    def start_game(self, quiz_name: str, username: str):
+        collection = self.get_user_quizzes_collection(username)
+
+        collection.update_one(
+            {"name": quiz_name},
+            {"$set": {"status": "1"}}
+        )
+
+        
 
     # "lets" a player join a game. returns true if the game is currently waiting for players, and false if not
     def join_game(self, gameCode: str):
