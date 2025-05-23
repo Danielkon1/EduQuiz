@@ -78,7 +78,7 @@ function User() {
 
   return (
     <>
-      {currentQuestion === 0 &&
+      {(currentQuestion === 0 && (
         <>
           <AppBar className="userAppBar">
             <div className="appBarContent">
@@ -133,7 +133,9 @@ function User() {
                               <div
                                 key={index}
                                 className="quizItem"
-                                onClick={() => openQuiz(quizName, user.username)}
+                                onClick={() =>
+                                  openQuiz(quizName, user.username)
+                                }
                               >
                                 {quizName}
                               </div>
@@ -170,12 +172,15 @@ function User() {
             change is in quiz mode
           </button>
         </>
-      ||
+      )) || (
         <>
           {quizContent[currentQuestion + 1].question}
-          <p>1. {quizContent[currentQuestion + 1].answer1} 2. {quizContent[currentQuestion + 1].answer2}</p>
+          <p>
+            1. {quizContent[currentQuestion + 1].answer1} 2.{" "}
+            {quizContent[currentQuestion + 1].answer2}
+          </p>
         </>
-      }
+      )}
     </>
   );
 }
