@@ -17,6 +17,7 @@ function Game() {
 
       const content = await postRequest(endpoint, data, returnType)
 
+      console.log(content)
       setHttpResponse(content);
     } catch (error) {
       console.error("Error during join_game:", error);

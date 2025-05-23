@@ -84,7 +84,15 @@ def handle_http_request(method: str, path: str, request: str):
 
                     database.start_game(quiz_name, username)
 
-                    http_response = create_success_response("ok")
+                    http_response = create_success_response("")
+                
+                elif path.startswith("/next_question"):
+                    quiz_name = data.get("quizName")
+                    username = data.get("username")
+
+                    database.next_question(quiz_name, username)
+
+                    http_response = create_success_response("")
                 
                 else:
                     http_response = create_not_found_response()

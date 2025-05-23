@@ -102,3 +102,16 @@
 .quizItem:hover {
   background-color: #3a3a3a;
 }
+
+.question1 {
+  color: #EF4444 !important;
+}
+.question2 {
+  color: #22C55E !important;
+}
+.question3 {
+  color: #EAB308 !important;
+}
+.question4 {
+  color: #3B82F6 !important;
+}

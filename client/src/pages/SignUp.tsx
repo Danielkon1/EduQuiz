@@ -6,8 +6,8 @@ import { postRequest, ResponseType } from "../api";
 
 
 export const user = {
-  username: "DefaultUser",
-  password: "DefaultPassword"
+  username: "daniel",
+  password: "daniel1"
 }
 
 function SignUp() {

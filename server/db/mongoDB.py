@@ -56,6 +56,7 @@ class MongoDB:
 
         return code, content
     
+    # starts a queued game (changes status)
     def start_game(self, quiz_name: str, username: str):
         collection = self.get_user_quizzes_collection(username)
 
@@ -63,7 +64,18 @@ class MongoDB:
             {"name": quiz_name},
             {"$set": {"status": "1"}}
         )
+    
+    # changes status of quiz to next question
+    def next_question(self, quiz_name: str, username: str):
+        collection = self.get_user_quizzes_collection(username)
 
+        doc = collection.find_one({"name": quiz_name})
+        current_question = str(int(doc.get("status")) + 1)
+        collection.update_one(
+            {"name": quiz_name},
+            {"$set": {"status": current_question}}
+        )
+    
         
 
     # "lets" a player join a game. returns true if the game is currently waiting for players, and false if not
@@ -73,7 +85,7 @@ class MongoDB:
                 continue
 
             collection = self.db.get_collection(collection_name)
-            quiz = collection.find_one({"code": gameCode, "status": "1"})
+            quiz = collection.find_one({"code": gameCode, "status": "-1"})
             if quiz is not None:
                 return True
         

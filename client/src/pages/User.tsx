@@ -10,7 +10,6 @@ import { postRequest, ResponseType } from "../api";
 function User() {
   const navigate = useNavigate();
 
-  type QuizCode = { code: string };
   type QuizQuestion = {
     question: string;
     answer1: string;
@@ -25,7 +24,8 @@ function User() {
   const [quizList, setQuizList] = useState([]);
   const [quizName, setQuizName] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [quizContent, setQuizContent] = useState<(QuizCode | QuizQuestion)[]>(
+  const [gameCode, setGameCode] = useState("")
+  const [quizContent, setQuizContent] = useState<QuizQuestion[]>(
     []
   );
 
@@ -53,8 +53,10 @@ function User() {
       const returnType = ResponseType.JSON;
 
       const content = await postRequest(endpoint, data, returnType);
-
-      setQuizContent(content);
+      
+      setGameCode(content[0].code)
+      const slicedContent = content.slice(1)
+      setQuizContent(slicedContent);
       setQuizName(quizName);
       setIsInQuiz(true);
     } catch (error) {
@@ -71,6 +73,21 @@ function User() {
       await postRequest(endpoint, data, returnType);
 
       setCurrentQuestion(1);
+    } catch (error) {
+      console.error("Error during start_game: ", error);
+    }
+  };
+
+  const nextQuestion = async () => {
+    try {
+      const endpoint = `/next_question`;
+      const username = user.username
+      const data = { quizName, username }
+      const returnType = ResponseType.TEXT;
+
+      await postRequest(endpoint, data, returnType);
+
+      setCurrentQuestion(currentQuestion + 1);
     } catch (error) {
       console.error("Error during start_game: ", error);
     }
@@ -153,10 +170,7 @@ function User() {
           )) || (
             <>
               <h1>
-                game code is -{" "}
-                {quizContent[0] && "code" in quizContent[0]
-                  ? quizContent[0].code
-                  : "no code"}
+                game code is -{gameCode}
               </h1>
               <br />
               <br />
@@ -174,11 +188,15 @@ function User() {
         </>
       )) || (
         <>
-          {quizContent[currentQuestion + 1].question}
-          <p>
-            1. {quizContent[currentQuestion + 1].answer1} 2.{" "}
-            {quizContent[currentQuestion + 1].answer2}
-          </p>
+          <h1>{quizContent[currentQuestion - 1].question}</h1>
+
+          <h2 className="question1">1 - {quizContent[currentQuestion - 1].answer1}</h2>
+          <h2 className="question2">2 - {quizContent[currentQuestion - 1].answer2}</h2>
+          <h2 className="question3">3 - {quizContent[currentQuestion - 1].answer3}</h2>
+          <h2 className="question4">4 - {quizContent[currentQuestion - 1].answer4}</h2>
+
+          <button onClick={() => nextQuestion()}>Next Question</button>
+          
         </>
       )}
     </>
