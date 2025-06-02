@@ -5,7 +5,7 @@ import "./design.css";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
-import { postRequest, ResponseType } from "../api";
+import { postRequest, getRequest } from "../api";
 
 function User() {
   const navigate = useNavigate();
@@ -30,30 +30,21 @@ function User() {
   );
 
   const getQuizzes = async () => {
-    const endpoint = `/quiz_list?username=${encodeURIComponent(user.username)}`;
-    try {
-      const response = await fetch(`http://localhost:4443${endpoint}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const endpoint = `/quiz_list`;
+    const params = `username=${user.username}`;
+    const response = await getRequest(endpoint, params);
 
-      const text = await response.json();
-      setQuizList(text);
-    } catch (error) {
-      console.error("Error during quiz list:", error);
-    }
+    setQuizList(response);
   };
 
   const openQuiz = async (quizName: string, username: string) => {
     try {
       const endpoint = `/open_quiz`;
       const data = { quizName, username };
-      const returnType = ResponseType.JSON;
 
-      const content = await postRequest(endpoint, data, returnType);
+      const content = await postRequest(endpoint, data);
       
+      console.log(content)
       setGameCode(content[0].code)
       const slicedContent = content.slice(1)
       setQuizContent(slicedContent);
@@ -68,9 +59,8 @@ function User() {
     try {
       const endpoint = `/start_game`;
       const data = { quizName, username };
-      const returnType = ResponseType.TEXT;
 
-      await postRequest(endpoint, data, returnType);
+      await postRequest(endpoint, data);
 
       setCurrentQuestion(1);
     } catch (error) {
@@ -83,9 +73,8 @@ function User() {
       const endpoint = `/next_question`;
       const username = user.username
       const data = { quizName, username }
-      const returnType = ResponseType.TEXT;
 
-      await postRequest(endpoint, data, returnType);
+      await postRequest(endpoint, data);
 
       setCurrentQuestion(currentQuestion + 1);
     } catch (error) {
@@ -170,7 +159,7 @@ function User() {
           )) || (
             <>
               <h1>
-                game code is -{gameCode}
+                game code is - {gameCode}
               </h1>
               <br />
               <br />

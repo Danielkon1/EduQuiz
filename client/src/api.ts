@@ -1,4 +1,4 @@
-import { encryptData, SERVER_URL } from "./config";
+import { encryptData, decryptData, SERVER_URL } from "./config";
 
 
 export enum ResponseType {
@@ -6,8 +6,45 @@ export enum ResponseType {
   TEXT = "text",
 }
 
+export const getRequest = async (endpoint: string, params: string): Promise<any> => {
+  try {
+    const encryptedParams = await encryptData(Object(params));
 
-export const postRequest = async (endpoint: string, data: object, responseType: ResponseType = ResponseType.TEXT): Promise<any> => {
+    const queryString = new URLSearchParams({
+      iv: JSON.stringify(encryptedParams.iv),
+      encrypted: JSON.stringify(encryptedParams.encrypted),
+    }).toString();
+
+    const response = await fetch(`${SERVER_URL}${endpoint}?${queryString}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const contentType = response.headers.get("Content-Type");
+
+    const encrypted = await response.json();
+    const decrypted = await decryptData(encrypted);
+    if (contentType?.includes("application/json")) {
+      return JSON.parse(decrypted)
+    } else if (contentType?.includes("text/plain")) {
+      return decrypted;
+    } else {
+      throw new Error(`Unsupported Content-Type: ${contentType}`);
+    }
+  } catch (error) {
+    console.error(`Error during get request to ${endpoint}:`, error);
+    throw error;
+  }
+};
+
+
+export const postRequest = async (endpoint: string, data: object): Promise<any> => {
   try {
     const encryptedData = await encryptData(data);
 
@@ -22,15 +59,18 @@ export const postRequest = async (endpoint: string, data: object, responseType: 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+    
 
-    if (responseType === ResponseType.JSON) {
-        return await response.json();
-    }
-    else if (responseType === ResponseType.TEXT) {
-        return await response.text();
-    }
-    else {
-        throw new Error(`Unsupported response type: ${responseType}`);
+    const contentType = response.headers.get("Content-Type");
+
+    const encrypted = await response.json();
+    const decrypted = await decryptData(encrypted);
+    if (contentType?.includes("application/json")) {
+      return JSON.parse(decrypted)
+    } else if (contentType?.includes("text/plain")) {
+      return decrypted;
+    } else {
+      throw new Error(`Unsupported Content-Type: ${contentType}`);
     }
   } catch (error) {
     console.error(`Error during post request to ${endpoint}:`, error);

@@ -2,7 +2,7 @@ import { AppBar, TextField } from "@mui/material";
 import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postRequest, ResponseType } from "../api";
+import { postRequest } from "../api";
 
 
 export const user = {
@@ -30,9 +30,8 @@ function SignUp() {
     try {
       const endpoint = mode === "signup" ? "/add_user" : "/login";
       const data = { username, password };
-      const returnType = ResponseType.TEXT;
 
-      const content = await postRequest(endpoint, data, returnType)
+      const content = await postRequest(endpoint, data)
 
       setHttpStatus("200");
       setMessage(content);

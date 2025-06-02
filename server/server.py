@@ -5,6 +5,8 @@ from utilities.utils import uri, db_name, users_collection_name, quizzes_collect
 from utilities.http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
 import json
 from utilities.crypto_utils import decrypt_aes_gcm
+from urllib.parse import parse_qs
+
 
 database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
 
@@ -13,7 +15,8 @@ def handle_http_client(client_socket: socket.socket, client_address):
     request = client_socket.recv(1024).decode()
 
     print("----------------------------------------------------------------\n" \
-        f"received HTTP request from {client_address}\n" \
+        f"received HTTP request from {client_address}\n\n" \
+        f"{request}\n\n" \
         "----------------------------------------------------------------")
     
     lines = request.split("\r\n")
@@ -51,6 +54,7 @@ def handle_http_request(method: str, path: str, request: str):
                     json_response = json.loads(content)
                     json_response.insert(0, {"code": code })
 
+                    print(json.dumps(json_response))
                     http_response = create_json_success_response(json.dumps(json_response))
                 
                 elif path.startswith("/add_user"):
@@ -106,11 +110,25 @@ def handle_http_request(method: str, path: str, request: str):
                 query_params = {}
                 if "?" in path:
                     query_string = path.split("?", 1)[1]
-                    pairs = query_string.split("&")
+                    parsed = parse_qs(query_string)
+
+                try:
+                    encrypted_query = {
+                    "iv": json.loads(parsed["iv"][0]),
+                    "encrypted": json.loads(parsed["encrypted"][0])
+                }
+                
+                    decrypted_query = decrypt_aes_gcm(encrypted_query)
+                    
+                    pairs = decrypted_query.split("&")
                     for pair in pairs:
                         if "=" in pair:
                             key, value = pair.split("=", 1)
                             query_params[key] = value
+
+                except Exception as e:
+                    print("Failed to process encrypted GET params:", e)
+
                 
                 if path.startswith("/quiz_list"):
                     username = query_params.get("username")

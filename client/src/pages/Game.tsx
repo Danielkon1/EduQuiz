@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import "./design.css";
-import { postRequest, ResponseType } from "../api";
+import { postRequest, getRequest } from "../api";
 
 function Game() {
   const [gameCode, setGameCode] = useState("");
@@ -13,11 +13,10 @@ function Game() {
     try {
       const endpoint = `/join_game`;
       const data = { gameCode };
-      const returnType = ResponseType.TEXT;
 
-      const content = await postRequest(endpoint, data, returnType)
+      const content = await postRequest(endpoint, data);
 
-      console.log(content)
+      console.log(content);
       setHttpResponse(content);
     } catch (error) {
       console.error("Error during join_game:", error);
@@ -27,22 +26,11 @@ function Game() {
   useEffect(() => {
     if (httpResponse === "True") {
       intervalRef.current = setInterval(async () => {
-        const endpoint = `/game_status?code=${encodeURIComponent(gameCode)}`;
-        try {
-          const response = await fetch(`http://localhost:4443${endpoint}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
+        const endpoint = `/game_status`;
+        const params = `code=${gameCode}`;
+        const response = await getRequest(endpoint, params);
 
-          const status = response.status;
-          console.log("status - " + status.toString());
-          const text = await response.text();
-          console.log(text);
-        } catch (error) {
-          console.error("Error during quiz list:", error);
-        }
+        console.log(response)
       }, 3000);
     } else {
       if (intervalRef.current) {
