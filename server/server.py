@@ -1,7 +1,7 @@
 import socket
 import threading
 from db.mongoDB import MongoDB
-from utilities.utils import uri, db_name, users_collection_name, quizzes_collection_name, port
+from utilities.utils import uri, db_name, users_collection_name, quizzes_collection_name, port, address
 from utilities.http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
 import json
 from utilities.crypto_utils import decrypt_aes_gcm
@@ -162,7 +162,7 @@ def handle_http_request(method: str, path: str, request: str):
 
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(("0.0.0.0", port))
+    server_socket.bind((address, port))
     server_socket.listen()
     print(f"Server running on port {port}")
 

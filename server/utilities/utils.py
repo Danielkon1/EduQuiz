@@ -7,8 +7,8 @@ quizzes_collection_name = "quizzes"
 
 
 # server
-address = 'localhost'
-port = 4443
+address = '0.0.0.0'
+port = 8000
 
 encryption_key = b"2200333911532491"
 
