@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postRequest } from "../api";
 
-
 export const user = {
   username: "daniel",
-  password: "daniel1"
-}
+  password: "daniel1",
+};
 
 function SignUp() {
   const [username, setUsername] = useState("");
@@ -20,7 +19,7 @@ function SignUp() {
   useEffect(() => {
     if (httpStatus === "200") {
       user.username = username;
-      user.password = password
+      user.password = password;
 
       navigate("/User");
     }
@@ -31,7 +30,7 @@ function SignUp() {
       const endpoint = mode === "signup" ? "/add_user" : "/login";
       const data = { username, password };
 
-      const content = await postRequest(endpoint, data)
+      const content = await postRequest(endpoint, data);
 
       setHttpStatus("200");
       setMessage(content);
@@ -47,7 +46,6 @@ function SignUp() {
         <h2>Daniel's kahoot - Signup/login</h2>
       </AppBar>
       <div className="signupPageCard">
-
         <p>Enter fields</p>
 
         <TextField

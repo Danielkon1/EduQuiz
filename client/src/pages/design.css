@@ -115,3 +115,23 @@
 .question4 {
   color: #3B82F6 !important;
 }
+.answer1 {
+  background-color: #EF4444 !important;
+  width: 200px;
+  height: 200px;
+}
+.answer2 {
+  background-color: #22C55E !important;
+  width: 200px;
+  height: 200px;
+}
+.answer3 {
+  background-color: #EAB308 !important;
+  width: 200px;
+  height: 200px;
+}
+.answer4 {
+  background-color: #3B82F6 !important;
+  width: 200px;
+  height: 200px;
+}

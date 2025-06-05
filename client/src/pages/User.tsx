@@ -24,10 +24,9 @@ function User() {
   const [quizList, setQuizList] = useState([]);
   const [quizName, setQuizName] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [gameCode, setGameCode] = useState("")
-  const [quizContent, setQuizContent] = useState<QuizQuestion[]>(
-    []
-  );
+  const [gameCode, setGameCode] = useState("");
+  const [quizContent, setQuizContent] = useState<QuizQuestion[]>([]);
+  const [winner, setWinner] = useState("");
 
   const getQuizzes = async () => {
     const endpoint = `/quiz_list`;
@@ -36,6 +35,7 @@ function User() {
 
     setQuizList(response);
   };
+  
 
   const openQuiz = async (quizName: string, username: string) => {
     try {
@@ -43,10 +43,10 @@ function User() {
       const data = { quizName, username };
 
       const content = await postRequest(endpoint, data);
-      
-      console.log(content)
-      setGameCode(content[0].code)
-      const slicedContent = content.slice(1)
+
+      console.log(content);
+      setGameCode(content[0].code);
+      const slicedContent = content.slice(1);
       setQuizContent(slicedContent);
       setQuizName(quizName);
       setIsInQuiz(true);
@@ -55,10 +55,17 @@ function User() {
     }
   };
 
-  const startQuiz = async (quizName: string, username: string) => {
+  const startQuiz = async (
+    quizName: string,
+    username: string,
+    firstAnswer: string
+  ) => {
     try {
       const endpoint = `/start_game`;
-      const data = { quizName, username };
+      console.log(firstAnswer);
+      console.log(typeof firstAnswer);
+
+      const data = { quizName, username, firstAnswer };
 
       await postRequest(endpoint, data);
 
@@ -68,18 +75,30 @@ function User() {
     }
   };
 
-  const nextQuestion = async () => {
+  const nextQuestion = async (currentQuestionObject: QuizQuestion) => {
     try {
-      const endpoint = `/next_question`;
-      const username = user.username
-      const data = { quizName, username }
+      if (typeof currentQuestionObject != "undefined") {
+        const endpoint = `/next_question`;
+        const username = user.username;
+        const currentAnswer = currentQuestionObject.correct;
+        const data = { quizName, username, currentAnswer };
 
-      await postRequest(endpoint, data);
+        await postRequest(endpoint, data);
+      }
 
       setCurrentQuestion(currentQuestion + 1);
     } catch (error) {
       console.error("Error during start_game: ", error);
     }
+  };
+  
+  const fetchResults = async () => {
+    console.log("fetching results")
+    const endpoint = `/fetch_results`;
+    const params = `gameCode=${gameCode}`;
+    const response = await getRequest(endpoint, params);
+
+    setWinner(response)
   };
 
   return (
@@ -158,12 +177,14 @@ function User() {
             </>
           )) || (
             <>
-              <h1>
-                game code is - {gameCode}
-              </h1>
+              <h1>game code is - {gameCode}</h1>
               <br />
               <br />
-              <button onClick={() => startQuiz(quizName, user.username)}>
+              <button
+                onClick={() =>
+                  startQuiz(quizName, user.username, quizContent[0].correct)
+                }
+              >
                 Start Game
               </button>
             </>
@@ -175,19 +196,46 @@ function User() {
             change is in quiz mode
           </button>
         </>
-      )) || (
-        <>
-          <h1>{quizContent[currentQuestion - 1].question}</h1>
+      )) ||
+        (currentQuestion < quizContent.length + 1 && (
+          <>
+            <h1>{quizContent[currentQuestion - 1].question}</h1>
 
-          <h2 className="question1">1 - {quizContent[currentQuestion - 1].answer1}</h2>
-          <h2 className="question2">2 - {quizContent[currentQuestion - 1].answer2}</h2>
-          <h2 className="question3">3 - {quizContent[currentQuestion - 1].answer3}</h2>
-          <h2 className="question4">4 - {quizContent[currentQuestion - 1].answer4}</h2>
+            <h2 className="question1">
+              1 - {quizContent[currentQuestion - 1].answer1}
+            </h2>
+            <h2 className="question2">
+              2 - {quizContent[currentQuestion - 1].answer2}
+            </h2>
+            <h2 className="question3">
+              3 - {quizContent[currentQuestion - 1].answer3}
+            </h2>
+            <h2 className="question4">
+              4 - {quizContent[currentQuestion - 1].answer4}
+            </h2>
 
-          <button onClick={() => nextQuestion()}>Next Question</button>
-          
-        </>
-      )}
+            <button
+              onClick={() => {
+                nextQuestion(quizContent[currentQuestion]);
+              }}
+            >
+              Next Question
+            </button>
+          </>
+        )) || (
+          <>
+            {winner === "" && (
+              <>
+                <h1>Finished quiz, please wait for results.</h1>
+                <button onClick={fetchResults}>fetch results</button>
+              </>
+            ) || (
+              <>
+                <h1>winner is: {winner}</h1>
+              </>
+            )}
+          </>
+        )}
     </>
   );
 }

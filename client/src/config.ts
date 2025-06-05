@@ -1,12 +1,12 @@
 export const ENCRYPTION_SECRET_CODE = "2200333911532491";
-export const SERVER_URL = "http://10.0.0.45:8000";
+export const SERVER_URL = "http://127.0.0.1:8000";
 
 const textEncoder = new TextEncoder();
 export const textDecoder = new TextDecoder();
 
 export const getKey = async () => {
   const rawKey = textEncoder.encode(ENCRYPTION_SECRET_CODE);
-  return await crypto.subtle.importKey(
+  return await window.crypto.subtle.importKey(
     "raw",
     rawKey,
     { name: "AES-GCM" },

@@ -5,6 +5,7 @@ db_name = "mydatabase"
 users_collection_name = "users"
 quizzes_collection_name = "quizzes"
 
+score_multiplier = 2
 
 # server
 address = '0.0.0.0'

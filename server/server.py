@@ -1,14 +1,14 @@
 import socket
 import threading
 from db.mongoDB import MongoDB
-from utilities.utils import uri, db_name, users_collection_name, quizzes_collection_name, port, address
+from utilities.utils import uri, db_name, users_collection_name, quizzes_collection_name, port, address, score_multiplier
 from utilities.http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
 import json
 from utilities.crypto_utils import decrypt_aes_gcm
 from urllib.parse import parse_qs
 
 
-database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name)
+database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name, score_multiplier)
 
 
 def handle_http_client(client_socket: socket.socket, client_address):
@@ -54,7 +54,6 @@ def handle_http_request(method: str, path: str, request: str):
                     json_response = json.loads(content)
                     json_response.insert(0, {"code": code })
 
-                    print(json.dumps(json_response))
                     http_response = create_json_success_response(json.dumps(json_response))
                 
                 elif path.startswith("/add_user"):
@@ -85,18 +84,38 @@ def handle_http_request(method: str, path: str, request: str):
                 elif path.startswith("/start_game"):
                     quiz_name = data.get("quizName")
                     username = data.get("username")
+                    first_answer = data.get("firstAnswer")
+                    
 
-                    database.start_game(quiz_name, username)
+                    database.start_game(quiz_name, username, first_answer)
 
                     http_response = create_success_response("")
                 
                 elif path.startswith("/next_question"):
                     quiz_name = data.get("quizName")
                     username = data.get("username")
-
-                    database.next_question(quiz_name, username)
+                    current_answer = data.get("currentAnswer")
+                    print("first answer is--------", current_answer)
+                    print("type of first answer is--------", type(current_answer))
+                    database.next_question(quiz_name, username, current_answer)
 
                     http_response = create_success_response("")
+                
+                elif path.startswith("/answer_question"):
+                    gameCode = data.get("gameCode")
+                    answer = data.get("current_answer")
+
+                    http_response = create_success_response(database.submit_answer(gameCode, answer))
+                
+                elif path.startswith("/submit_results"):
+                    print("in submit results")
+                    game_code = data.get("gameCode")
+                    score = data.get("score")
+                    name = data.get("name")
+
+                    http_response = create_success_response(database.submit_results(game_code, score, name))
+                
+                
                 
                 else:
                     http_response = create_not_found_response()
@@ -116,7 +135,7 @@ def handle_http_request(method: str, path: str, request: str):
                     encrypted_query = {
                     "iv": json.loads(parsed["iv"][0]),
                     "encrypted": json.loads(parsed["encrypted"][0])
-                }
+                    }
                 
                     decrypted_query = decrypt_aes_gcm(encrypted_query)
                     
@@ -146,13 +165,19 @@ def handle_http_request(method: str, path: str, request: str):
                         http_response = create_not_found_response()
                     else:
                         http_response = create_success_response(game_status)
+
+                elif path.startswith("/fetch_results"):
+                    print("entered game code")
+                    game_code = query_params.get("gameCode")
+
+                    http_response = create_success_response(database.fetch_results(game_code))
                 
                 else:
                     http_response = create_not_found_response()
                 
 
             except Exception as e:
-                print(f"error during POST: {e}")
+                print(f"error during GET: {e}")
                 http_response = create_bad_json_response()
 
     return http_response
