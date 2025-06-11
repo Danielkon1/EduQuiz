@@ -20,6 +20,9 @@
 .custom-text-field .MuiInputLabel-root.Mui-focused {
   color: lightgray;
 }
+.custom-text-field {
+  width: 200px;
+}
 
 .padButtons button {
   margin-right: 10px;

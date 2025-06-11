@@ -7,17 +7,18 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
 import { postRequest, getRequest } from "../api";
 
+export type QuizQuestion = {
+  question: string;
+  answer1: string;
+  answer2: string;
+  answer3: string;
+  answer4: string;
+  correct: string;
+};
+
 function User() {
   const navigate = useNavigate();
 
-  type QuizQuestion = {
-    question: string;
-    answer1: string;
-    answer2: string;
-    answer3: string;
-    answer4: string;
-    correct: string;
-  };
 
   const [open, setOpen] = useState(false);
   const [isInQuiz, setIsInQuiz] = useState(false);
@@ -118,7 +119,7 @@ function User() {
                 </div>
               </div>
 
-              <h2>Daniel's kahoot - Welcome, {user.username}</h2>
+              <h2>EduQuiz - Welcome, {user.username}</h2>
               {!isInQuiz && (
                 <>
                   <Link to="/create-game">
@@ -189,12 +190,6 @@ function User() {
               </button>
             </>
           )}
-
-          <br />
-          <br />
-          <button onClick={() => setIsInQuiz(!isInQuiz)}>
-            change is in quiz mode
-          </button>
         </>
       )) ||
         (currentQuestion < quizContent.length + 1 && (

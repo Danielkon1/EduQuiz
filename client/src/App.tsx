@@ -5,12 +5,12 @@ function App() {
   return (
     <>
       <AppBar>
-        <h2>Daniel's kahoot - Home</h2>
+        <h2>EduQuiz - Home</h2>
       </AppBar>
-      <h2>Welcome to Daniel's kahoot</h2>
-      <p>Select Option</p>
+      <h2>Welcome to EduQuiz</h2>
+      <h2>Select Option</h2>
       <Button variant="outlined" className="outlinedButtons">
-        <a href="/signup">Sign up</a>
+        <a href="/signup">Sign up / Log in</a>
       </Button>
       <br />
       <br />

@@ -43,7 +43,7 @@ function SignUp() {
   return (
     <>
       <AppBar>
-        <h2>Daniel's kahoot - Signup/login</h2>
+        <h2>EduQuiz - Signup/login</h2>
       </AppBar>
       <div className="signupPageCard">
         <p>Enter fields</p>

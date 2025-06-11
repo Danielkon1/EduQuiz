@@ -153,6 +153,10 @@ function Game() {
               submit results / leave quiz
             </button>
           </>
+        ) || (
+          <>
+            <h1>Waiting for host to start the game</h1>
+          </>
         ))}
     </>
   );

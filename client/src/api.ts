@@ -47,7 +47,7 @@ export const getRequest = async (endpoint: string, params: string): Promise<any>
 export const postRequest = async (endpoint: string, data: object): Promise<any> => {
   try {
     const encryptedData = await encryptData(data);
-
+  
     const response = await fetch(`${SERVER_URL}${endpoint}`, {
       method: "POST",
       headers: {

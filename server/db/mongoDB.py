@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import random
 import string
+import json
 
 class MongoDB:
     # connects to db and creates instance
@@ -45,7 +46,8 @@ class MongoDB:
         chars = string.ascii_uppercase + string.digits
         code = ''.join(random.choices(chars, k=6))
 
-
+        print(quiz_name)
+        print(type(quiz_name))
         collection.update_one(
             {"name": quiz_name},
             {"$set": {
@@ -63,8 +65,8 @@ class MongoDB:
 
         
         content = doc.get("content")
-
-        return code, content
+        
+        return code, json.dumps(content)
     
     # submits an answer for a player competing in a quiz, returns score based on the answer and when answered
     def submit_answer(self, game_code: str, answer: str):
@@ -189,7 +191,26 @@ class MongoDB:
             if quiz is not None:
                 return quiz.get("status")
         return "not found"
+    
+    # adds a new quiz to a user's profile
+    def add_quiz(self, name: string, content: object, username: string):
+        collection = self.__get_user_quizzes_collection(username)
 
+        new_quiz = {
+            "name": name,
+            "content": content,
+            "code": "0",
+            "status": "-2",
+            "next_score": "0",
+            "player_amount": "0",
+            "winner": "no player played",
+            "winner_score": "0",
+            "current_answer": "0"
+        }
+
+        result = collection.insert_one(new_quiz)
+        
+        return result
     
     # adds user to users collection
     def insert_user(self, username: str, password: str):
