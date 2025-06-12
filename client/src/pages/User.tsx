@@ -1,12 +1,11 @@
 import { AppBar, Button, Collapse, IconButton } from "@mui/material";
 import { user } from "./Signup";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./design.css";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
 import { postRequest, getRequest } from "../api";
-
 export type QuizQuestion = {
   question: string;
   answer1: string;
@@ -18,6 +17,7 @@ export type QuizQuestion = {
 
 function User() {
   const navigate = useNavigate();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
 
   const [open, setOpen] = useState(false);
@@ -28,6 +28,27 @@ function User() {
   const [gameCode, setGameCode] = useState("");
   const [quizContent, setQuizContent] = useState<QuizQuestion[]>([]);
   const [winner, setWinner] = useState("");
+
+
+  useEffect(() => {
+    let src = "";
+    if (currentQuestion === 0 && isInQuiz) {
+      src = "/music/LobbyMusic.mp3";
+    } else if (currentQuestion > 0 && currentQuestion < quizContent.length + 1) {
+      src = "/music/InGame1.mp3";
+    } else if (currentQuestion >= quizContent.length + 1 && winner === "") {
+      src = "/music/LobbyMusic.mp3";
+    } else if (winner !== "") {
+      src = "/music/Winner.mp3";
+    }
+    if (audioRef.current) {
+      if (audioRef.current.src !== window.location.origin + src) {
+        audioRef.current.src = src;
+        audioRef.current.play().catch(() => {}); // suppress autoplay error
+      }
+    }
+  }, [currentQuestion, isInQuiz, quizContent.length, winner]);
+
 
   const getQuizzes = async () => {
     const endpoint = `/quiz_list`;
@@ -104,6 +125,7 @@ function User() {
 
   return (
     <>
+      <audio ref={audioRef} loop hidden />
       {(currentQuestion === 0 && (
         <>
           <AppBar className="userAppBar">
@@ -227,6 +249,12 @@ function User() {
             ) || (
               <>
                 <h1>winner is: {winner}</h1>
+                <button onClick={() => {
+                  setWinner("");
+                  setCurrentQuestion(0);
+                  setIsInQuiz(false);
+                  
+                }}>back to user page</button>
               </>
             )}
           </>
