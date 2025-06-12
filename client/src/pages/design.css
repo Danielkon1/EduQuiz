@@ -123,8 +123,18 @@
   width: 200px;
   height: 200px;
 }
+.disabledAnswer1 {
+  background-color: #ef44448e !important;
+  width: 200px;
+  height: 200px;
+}
 .answer2 {
   background-color: #22C55E !important;
+  width: 200px;
+  height: 200px;
+}
+.disabledAnswer2 {
+  background-color: #22c55e86 !important;
   width: 200px;
   height: 200px;
 }
@@ -133,8 +143,18 @@
   width: 200px;
   height: 200px;
 }
+.disabledAnswer3 {
+  background-color: #eab2088b !important;
+  width: 200px;
+  height: 200px;
+}
 .answer4 {
-  background-color: #3B82F6 !important;
+  background-color: #3b83f6 !important;
+  width: 200px;
+  height: 200px;
+}
+.disabledAnswer4 {
+  background-color: #3b83f68b !important;
   width: 200px;
   height: 200px;
 }

@@ -19,7 +19,6 @@ function User() {
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-
   const [open, setOpen] = useState(false);
   const [isInQuiz, setIsInQuiz] = useState(false);
   const [quizList, setQuizList] = useState([]);
@@ -29,12 +28,14 @@ function User() {
   const [quizContent, setQuizContent] = useState<QuizQuestion[]>([]);
   const [winner, setWinner] = useState("");
 
-
   useEffect(() => {
     let src = "";
     if (currentQuestion === 0 && isInQuiz) {
       src = "/music/LobbyMusic.mp3";
-    } else if (currentQuestion > 0 && currentQuestion < quizContent.length + 1) {
+    } else if (
+      currentQuestion > 0 &&
+      currentQuestion < quizContent.length + 1
+    ) {
       src = "/music/InGame1.mp3";
     } else if (currentQuestion >= quizContent.length + 1 && winner === "") {
       src = "/music/LobbyMusic.mp3";
@@ -49,7 +50,6 @@ function User() {
     }
   }, [currentQuestion, isInQuiz, quizContent.length, winner]);
 
-
   const getQuizzes = async () => {
     const endpoint = `/quiz_list`;
     const params = `username=${user.username}`;
@@ -57,7 +57,6 @@ function User() {
 
     setQuizList(response);
   };
-  
 
   const openQuiz = async (quizName: string, username: string) => {
     try {
@@ -113,14 +112,14 @@ function User() {
       console.error("Error during start_game: ", error);
     }
   };
-  
+
   const fetchResults = async () => {
-    console.log("fetching results")
+    console.log("fetching results");
     const endpoint = `/fetch_results`;
     const params = `gameCode=${gameCode}`;
     const response = await getRequest(endpoint, params);
 
-    setWinner(response)
+    setWinner(response);
   };
 
   return (
@@ -241,20 +240,23 @@ function User() {
           </>
         )) || (
           <>
-            {winner === "" && (
+            {(winner === "" && (
               <>
                 <h1>Finished quiz, please wait for results.</h1>
                 <button onClick={fetchResults}>fetch results</button>
               </>
-            ) || (
+            )) || (
               <>
                 <h1>winner is: {winner}</h1>
-                <button onClick={() => {
-                  setWinner("");
-                  setCurrentQuestion(0);
-                  setIsInQuiz(false);
-                  
-                }}>back to user page</button>
+                <button
+                  onClick={() => {
+                    setWinner("");
+                    setCurrentQuestion(0);
+                    setIsInQuiz(false);
+                  }}
+                >
+                  back to user page
+                </button>
               </>
             )}
           </>

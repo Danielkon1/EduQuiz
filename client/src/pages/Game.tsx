@@ -37,7 +37,7 @@ function Game() {
         const response = await getRequest(endpoint, params);
 
         if (Number(response) !== currentQuestion) {
-          setHasQuestionChanged(true)
+          setHasQuestionChanged(true);
         }
         setCurrentQuestion(Number(response));
       }, 500);
@@ -62,10 +62,10 @@ function Game() {
         const endpoint = `/answer_question`;
         const current_answer = String(currentAnswer);
         const data = { gameCode, current_answer };
-  
+
         const response = await postRequest(endpoint, data);
         setCurrentScore(currentScore + Number(response));
-        setHasQuestionChanged(false)
+        setHasQuestionChanged(false);
       }
     } catch (error) {
       console.error("Error during join_game:", error);
@@ -118,26 +118,30 @@ function Game() {
             <br />
             <div>
               <button
-                className="answer1"
+                className={hasQuestionChanged ? "answer1" : "disabledAnswer1"}
+                disabled={!hasQuestionChanged}
                 onClick={() => submitAnswer(gameCode, 1)}
-              >
+                >
                 1
               </button>
               <button
-                className="answer2"
+                className={hasQuestionChanged ? "answer2" : "disabledAnswer2"}
+                disabled={!hasQuestionChanged}
                 onClick={() => submitAnswer(gameCode, 2)}
-              >
+                >
                 2
               </button>
               <br />
               <button
-                className="answer3"
+                className={hasQuestionChanged ? "answer3" : "disabledAnswer3"}
+                disabled={!hasQuestionChanged}
                 onClick={() => submitAnswer(gameCode, 3)}
-              >
+                >
                 3
               </button>
               <button
-                className="answer4"
+                className={hasQuestionChanged ? "answer4" : "disabledAnswer4"}
+                disabled={!hasQuestionChanged}
                 onClick={() => submitAnswer(gameCode, 4)}
               >
                 4
@@ -153,11 +157,11 @@ function Game() {
               submit results / leave quiz
             </button>
           </>
-        ) || (
+        )) || (
           <>
             <h1>Waiting for host to start the game</h1>
           </>
-        ))}
+        )}
     </>
   );
 }
