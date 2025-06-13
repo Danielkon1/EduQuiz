@@ -2,7 +2,7 @@ import socket
 import threading
 from db.mongoDB import MongoDB
 from utilities.utils import uri, db_name, users_collection_name, quizzes_collection_name, port, address, score_multiplier
-from utilities.http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response
+from utilities.http_utils import create_options_response, create_success_response, create_not_found_response, create_login_failed_response, create_bad_json_response, create_json_success_response, create_server_error_response, create_signup_failed_response
 import json
 from utilities.crypto_utils import decrypt_aes_gcm
 from urllib.parse import parse_qs
@@ -84,13 +84,9 @@ def handle_http_request(method: str, path: str, request: str):
                     quiz_name = data.get("quizName")
                     username = data.get("username")
                     code, content = database.create_game_queue(username, quiz_name)
-                    print("error not in db")
-                    content.replace("'", '"')
-                    print(content)
+
                     json_response = json.loads(content)
-                    print("error not in loads")
                     json_response.insert(0, {"code": code })
-                    print("error not in insertion")
 
                     http_response = create_json_success_response(json.dumps(json_response))
                 
@@ -101,7 +97,7 @@ def handle_http_request(method: str, path: str, request: str):
                     insertion_result = database.insert_user(username, password)
                     
                     if insertion_result == "username already in database":
-                        http_response = create_login_failed_response("username already exists")
+                        http_response = create_signup_failed_response("User already exists")
                     else:
                         http_response = create_success_response(f"User {username} added!")
 
@@ -168,7 +164,7 @@ def handle_http_request(method: str, path: str, request: str):
 
             except Exception as e:
                 print(f"error during POST: {e}")
-                http_response = create_bad_json_response()
+                http_response = create_server_error_response()
         
         case "GET":
             try:

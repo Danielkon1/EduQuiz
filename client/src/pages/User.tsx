@@ -28,6 +28,10 @@ function User() {
   const [quizContent, setQuizContent] = useState<QuizQuestion[]>([]);
   const [winner, setWinner] = useState("");
 
+  const getRandomInGameSong = () => {
+    return `InGame${Math.floor(Math.random() * 3 + 1)}.mp3`
+  };
+
   useEffect(() => {
     let src = "";
     if (currentQuestion === 0 && isInQuiz) {
@@ -36,7 +40,8 @@ function User() {
       currentQuestion > 0 &&
       currentQuestion < quizContent.length + 1
     ) {
-      src = "/music/InGame1.mp3";
+      console.log(`/music/${getRandomInGameSong()}`)
+      src = `/music/${getRandomInGameSong()}`;
     } else if (currentQuestion >= quizContent.length + 1 && winner === "") {
       src = "/music/LobbyMusic.mp3";
     } else if (winner !== "") {
@@ -45,7 +50,7 @@ function User() {
     if (audioRef.current) {
       if (audioRef.current.src !== window.location.origin + src) {
         audioRef.current.src = src;
-        audioRef.current.play().catch(() => {}); // suppress autoplay error
+        audioRef.current.play().catch(() => {});
       }
     }
   }, [currentQuestion, isInQuiz, quizContent.length, winner]);

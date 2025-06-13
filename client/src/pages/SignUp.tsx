@@ -1,6 +1,6 @@
 import { AppBar, TextField } from "@mui/material";
 import "./design.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postRequest } from "../api";
 
@@ -12,31 +12,21 @@ export const user = {
 function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [httpStatus, setHttpStatus] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (httpStatus === "200") {
-      user.username = username;
-      user.password = password;
-
-      navigate("/User");
-    }
-  }, [message, httpStatus, username, password, navigate]);
-
-  const handleSignUp = async (mode: "signup" | "login") => {
+  const handleRequest = async (mode: "signup" | "login") => {
     try {
       const endpoint = mode === "signup" ? "/add_user" : "/login";
       const data = { username, password };
 
-      const content = await postRequest(endpoint, data);
+      await postRequest(endpoint, data);
 
-      setHttpStatus("200");
-      setMessage(content);
+      user.username = username;
+      user.password = password;
+
+      navigate("/User");
     } catch (error) {
-      console.error("Error during sign-up/login:", error);
-      setMessage("Error connecting to the server.");
+      window.alert(`Error during sign-up/login: ${error}`);
     }
   };
 
@@ -68,10 +58,9 @@ function SignUp() {
         <br />
         <br />
         <div className="padButtons">
-          <button onClick={() => handleSignUp("login")}>Log In</button>
-          <button onClick={() => handleSignUp("signup")}>Sign Up</button>
+          <button onClick={() => handleRequest("login")}>Log In</button>
+          <button onClick={() => handleRequest("signup")}>Sign Up</button>
         </div>
-        {message && <p>{message}</p>}
       </div>
     </>
   );

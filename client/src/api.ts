@@ -22,21 +22,24 @@ export const getRequest = async (endpoint: string, params: string): Promise<any>
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
     const contentType = response.headers.get("Content-Type");
 
     const encrypted = await response.json();
     const decrypted = await decryptData(encrypted);
+    let returnText = ""
     if (contentType?.includes("application/json")) {
-      return JSON.parse(decrypted)
+      returnText = JSON.parse(decrypted)
     } else if (contentType?.includes("text/plain")) {
-      return decrypted;
+      returnText = decrypted;
     } else {
       throw new Error(`Unsupported Content-Type: ${contentType}`);
     }
+
+    if (!response.ok) {
+      throw new Error(`${returnText}`);
+    }
+    
+    return returnText
   } catch (error) {
     console.error(`Error during get request to ${endpoint}:`, error);
     throw error;
@@ -56,22 +59,25 @@ export const postRequest = async (endpoint: string, data: object): Promise<any> 
       body: JSON.stringify(encryptedData),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-
     const contentType = response.headers.get("Content-Type");
 
     const encrypted = await response.json();
     const decrypted = await decryptData(encrypted);
+    let returnText = ""
     if (contentType?.includes("application/json")) {
-      return JSON.parse(decrypted)
+      returnText = JSON.parse(decrypted)
     } else if (contentType?.includes("text/plain")) {
-      return decrypted;
+      returnText = decrypted;
     } else {
       throw new Error(`Unsupported Content-Type: ${contentType}`);
     }
+
+    if (!response.ok) {
+      throw new Error(`${returnText}`);
+    }
+    
+    return returnText
+
   } catch (error) {
     console.error(`Error during post request to ${endpoint}:`, error);
     throw error;

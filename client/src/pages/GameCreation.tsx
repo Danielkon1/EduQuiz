@@ -199,9 +199,6 @@ function GameCreation() {
           <br />
           <br />
           <button onClick={sendQuiz}>Finish Quiz</button>
-          <br />
-          <br />
-          <button onClick={() => console.log(quiz)}>click me!</button>
         </>
       )}
     </>
