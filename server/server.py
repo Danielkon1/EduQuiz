@@ -6,6 +6,7 @@ from utilities.http_utils import create_options_response, create_success_respons
 import json
 from utilities.crypto_utils import decrypt_aes_gcm
 from urllib.parse import parse_qs
+import ssl
 
 
 database = MongoDB(uri, db_name, users_collection_name, quizzes_collection_name, score_multiplier)
@@ -228,13 +229,17 @@ def handle_http_request(method: str, path: str, request: str):
 
 
 def main():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((address, port))
-    server_socket.listen()
+    raw_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    raw_socket.bind((address, port))
+    raw_socket.listen()
     print(f"Server running on port {port}")
 
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile='cert.pem', keyfile='key.pem')
+    secure_socket = context.wrap_socket(raw_socket, server_side=True)
+
     while True:
-        client_socket, client_address = server_socket.accept()
+        client_socket, client_address = secure_socket.accept()
         threading.Thread(target=handle_http_client, args=(client_socket, client_address), daemon=True).start()
 
 if __name__ == "__main__":

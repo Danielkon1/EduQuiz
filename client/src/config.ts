@@ -1,5 +1,5 @@
 export const ENCRYPTION_SECRET_CODE = "2200333911532491";
-export const SERVER_URL = "http://127.0.0.1:8000";
+export const SERVER_URL = "https://10.0.0.45:4443";
 
 const textEncoder = new TextEncoder();
 export const textDecoder = new TextDecoder();

@@ -9,7 +9,7 @@ score_multiplier = 2
 
 # server
 address = '0.0.0.0'
-port = 8000
+port = 4443
 
 encryption_key = b"2200333911532491"
 
