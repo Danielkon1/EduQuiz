@@ -40,7 +40,6 @@ function User() {
       currentQuestion > 0 &&
       currentQuestion < quizContent.length + 1
     ) {
-      console.log(`/music/${getRandomInGameSong()}`)
       src = `/music/${getRandomInGameSong()}`;
     } else if (currentQuestion >= quizContent.length + 1 && winner === "") {
       src = "/music/LobbyMusic.mp3";
@@ -70,7 +69,6 @@ function User() {
 
       const content = await postRequest(endpoint, data);
 
-      console.log(content);
       setGameCode(content[0].code);
       const slicedContent = content.slice(1);
       setQuizContent(slicedContent);
@@ -88,8 +86,6 @@ function User() {
   ) => {
     try {
       const endpoint = `/start_game`;
-      console.log(firstAnswer);
-      console.log(typeof firstAnswer);
 
       const data = { quizName, username, firstAnswer };
 
@@ -119,12 +115,15 @@ function User() {
   };
 
   const fetchResults = async () => {
-    console.log("fetching results");
-    const endpoint = `/fetch_results`;
-    const params = `gameCode=${gameCode}`;
-    const response = await getRequest(endpoint, params);
-
-    setWinner(response);
+    try {
+      const endpoint = `/fetch_results`;
+      const params = `gameCode=${gameCode}`;
+      const response = await getRequest(endpoint, params);
+  
+      setWinner(response);
+    } catch (error) {
+      console.error("Error during fetch_results: ", error)
+    }
   };
 
   return (

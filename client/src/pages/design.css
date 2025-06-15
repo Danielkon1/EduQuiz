@@ -118,43 +118,34 @@
 .question4 {
   color: #3B82F6 !important;
 }
-.answer1 {
-  background-color: #EF4444 !important;
-  width: 200px;
-  height: 200px;
-}
-.disabledAnswer1 {
-  background-color: #ef44448e !important;
-  width: 200px;
-  height: 200px;
-}
-.answer2 {
-  background-color: #22C55E !important;
-  width: 200px;
-  height: 200px;
-}
-.disabledAnswer2 {
-  background-color: #22c55e86 !important;
-  width: 200px;
-  height: 200px;
-}
-.answer3 {
-  background-color: #EAB308 !important;
-  width: 200px;
-  height: 200px;
-}
-.disabledAnswer3 {
-  background-color: #eab2088b !important;
-  width: 200px;
-  height: 200px;
-}
-.answer4 {
-  background-color: #3b83f6 !important;
-  width: 200px;
-  height: 200px;
-}
+.answer1,
+.answer2,
+.answer3,
+.answer4,
+.disabledAnswer1,
+.disabledAnswer2,
+.disabledAnswer3,
 .disabledAnswer4 {
-  background-color: #3b83f68b !important;
-  width: 200px;
-  height: 200px;
+  width: 30vw;
+  max-width: 200px;
+  height: 30vw;
+  max-height: 200px;
+  font-size: 1.5rem;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  margin: 5px;
 }
+
+.answer1 { background-color: #EF4444 !important; }
+.disabledAnswer1 { background-color: #ef44448e !important; }
+
+.answer2 { background-color: #22C55E !important; }
+.disabledAnswer2 { background-color: #22c55e86 !important; }
+
+.answer3 { background-color: #EAB308 !important; }
+.disabledAnswer3 { background-color: #eab2088b !important; }
+
+.answer4 { background-color: #3b83f6 !important; }
+.disabledAnswer4 { background-color: #3b83f68b !important; }

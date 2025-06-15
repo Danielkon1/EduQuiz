@@ -1,6 +1,6 @@
 import { AppBar, TextField } from "@mui/material";
 import "./design.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postRequest } from "../api";
 
@@ -26,9 +26,19 @@ function SignUp() {
 
       navigate("/User");
     } catch (error) {
-      window.alert(`Error during sign-up/login: ${error}`);
+      alert(`Error during sign-up/login: ${error}`);
     }
   };
+
+  const isUsingSmallScreen = () => {
+    return window.innerWidth < 768;
+  };
+
+  useEffect(() => {
+    if (isUsingSmallScreen()) {
+      alert("The following pages are recommended to be used from a device with a larger screen (not phone)");
+    }
+  }, []);
 
   return (
     <>

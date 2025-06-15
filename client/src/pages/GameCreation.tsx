@@ -53,8 +53,6 @@ function GameCreation() {
 
   const sendQuiz = async () => {
     try {
-      console.log(quiz)
-
       const endpoint = `/add_quiz`;
       const name = finalQuizName;
       const content = quiz;
@@ -65,7 +63,7 @@ function GameCreation() {
 
       navigate("/user");
     } catch (error) {
-      console.error("Error during open_quiz:", error);
+      console.error("Error during add_quiz:", error);
     }
   };
 

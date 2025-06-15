@@ -68,7 +68,7 @@ function Game() {
         setHasQuestionChanged(false);
       }
     } catch (error) {
-      console.error("Error during join_game:", error);
+      console.error("Error during answer_question:", error);
     }
   };
   const submitResults = async (
@@ -84,7 +84,7 @@ function Game() {
       setIntervalContinueFlag(false);
       navigate("/");
     } catch (error) {
-      console.error("Error during join_game:", error);
+      console.error("Error during submit_results:", error);
     }
   };
   return (
@@ -116,27 +116,32 @@ function Game() {
             <h2>current question: {currentQuestion}</h2>
             <h2>current score: {currentScore}</h2>
             <br />
-            <div>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
               <button
                 className={hasQuestionChanged ? "answer1" : "disabledAnswer1"}
                 disabled={!hasQuestionChanged}
                 onClick={() => submitAnswer(gameCode, 1)}
-                >
+              >
                 1
               </button>
               <button
                 className={hasQuestionChanged ? "answer2" : "disabledAnswer2"}
                 disabled={!hasQuestionChanged}
                 onClick={() => submitAnswer(gameCode, 2)}
-                >
+              >
                 2
               </button>
-              <br />
               <button
                 className={hasQuestionChanged ? "answer3" : "disabledAnswer3"}
                 disabled={!hasQuestionChanged}
                 onClick={() => submitAnswer(gameCode, 3)}
-                >
+              >
                 3
               </button>
               <button
@@ -147,6 +152,7 @@ function Game() {
                 4
               </button>
             </div>
+
             <br />
             <br />
             <button
