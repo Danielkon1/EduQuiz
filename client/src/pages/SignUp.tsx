@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { postRequest } from "../api";
 
 export const user = {
-  username: "daniel",
-  password: "daniel1",
+  username: "",
+  password: "",
 };
 
 function SignUp() {

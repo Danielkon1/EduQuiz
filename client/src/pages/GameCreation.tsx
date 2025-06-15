@@ -1,7 +1,7 @@
 import { AppBar, IconButton, TextField } from "@mui/material";
 import { user } from "./Signup";
 import "./design.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QuizQuestion } from "./User";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
@@ -56,7 +56,7 @@ function GameCreation() {
       const endpoint = `/add_quiz`;
       const name = finalQuizName;
       const content = quiz;
-      const username = user.username
+      const username = user.username;
       const data = { name, content, username };
 
       await postRequest(endpoint, data);
@@ -66,6 +66,12 @@ function GameCreation() {
       console.error("Error during add_quiz:", error);
     }
   };
+
+  useEffect(() => {
+    if (user.username === "" || user.password === "") {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <>

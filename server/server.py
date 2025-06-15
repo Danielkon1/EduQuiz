@@ -130,8 +130,6 @@ def handle_http_request(method: str, path: str, request: str):
                     quiz_name = data.get("quizName")
                     username = data.get("username")
                     current_answer = data.get("currentAnswer")
-                    print("first answer is--------", current_answer)
-                    print("type of first answer is--------", type(current_answer))
                     database.next_question(quiz_name, username, current_answer)
 
                     http_response = create_success_response("")
@@ -154,8 +152,6 @@ def handle_http_request(method: str, path: str, request: str):
                     content = data.get("content")
                     username = data.get("username")
 
-                    print(content)
-                    print(type(content))
 
                     http_response = create_success_response(str(database.add_quiz(name, content, username)))
 
@@ -210,7 +206,6 @@ def handle_http_request(method: str, path: str, request: str):
                         http_response = create_success_response(game_status)
 
                 elif path.startswith("/fetch_results"):
-                    print("entered game code")
                     game_code = query_params.get("gameCode")
 
                     http_response = create_success_response(database.fetch_results(game_code))

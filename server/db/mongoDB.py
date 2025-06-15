@@ -46,8 +46,6 @@ class MongoDB:
         chars = string.ascii_uppercase + string.digits
         code = ''.join(random.choices(chars, k=6))
 
-        print(quiz_name)
-        print(type(quiz_name))
         collection.update_one(
             {"name": quiz_name},
             {"$set": {

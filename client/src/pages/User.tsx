@@ -29,12 +29,18 @@ function User() {
   const [winner, setWinner] = useState("");
 
   const getRandomInGameSong = () => {
-    return `InGame${Math.floor(Math.random() * 3 + 1)}.mp3`
+    return `InGame${Math.floor(Math.random() * 3 + 1)}.mp3`;
   };
 
   useEffect(() => {
+    if (user.username === "" || user.password === "") {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
     let src = "";
-    if (currentQuestion === 0 && isInQuiz) {
+     if (currentQuestion === 0 && isInQuiz) {
       src = "/music/LobbyMusic.mp3";
     } else if (
       currentQuestion > 0 &&
@@ -119,10 +125,10 @@ function User() {
       const endpoint = `/fetch_results`;
       const params = `gameCode=${gameCode}`;
       const response = await getRequest(endpoint, params);
-  
+
       setWinner(response);
     } catch (error) {
-      console.error("Error during fetch_results: ", error)
+      console.error("Error during fetch_results: ", error);
     }
   };
 
