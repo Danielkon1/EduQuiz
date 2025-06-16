@@ -1,4 +1,4 @@
-import { AppBar, Button, Collapse, IconButton } from "@mui/material";
+import { AppBar, Button, Collapse, Dialog, IconButton } from "@mui/material";
 import { user } from "./Signup";
 import { useEffect, useRef, useState } from "react";
 import "./design.css";
@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
 import { postRequest, getRequest } from "../api";
+import { CheckBox } from "@mui/icons-material";
 export type QuizQuestion = {
   question: string;
   answer1: string;
@@ -27,6 +28,7 @@ function User() {
   const [gameCode, setGameCode] = useState("");
   const [quizContent, setQuizContent] = useState<QuizQuestion[]>([]);
   const [winner, setWinner] = useState("");
+  const [isDialogPopUpOpen, setIsDialogPopUpOpen] = useState(false);
 
   const getRandomInGameSong = () => {
     return `InGame${Math.floor(Math.random() * 3 + 1)}.mp3`;
@@ -40,7 +42,7 @@ function User() {
 
   useEffect(() => {
     let src = "";
-     if (currentQuestion === 0 && isInQuiz) {
+    if (currentQuestion === 0 && isInQuiz) {
       src = "/music/LobbyMusic.mp3";
     } else if (
       currentQuestion > 0 &&
@@ -190,8 +192,9 @@ function User() {
                               <div
                                 key={index}
                                 className="quizItem"
-                                onClick={() =>
-                                  openQuiz(quizName, user.username)
+                                onClick={
+                                  () => setIsDialogPopUpOpen(true)
+                                  // openQuiz(quizName, user.username)
                                 }
                               >
                                 {quizName}
@@ -203,6 +206,27 @@ function User() {
                   </div>
                 </div>
               </Collapse>
+
+              <Dialog
+                open={isDialogPopUpOpen}
+                onClose={() => setIsDialogPopUpOpen(false)}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      backgroundColor: '#2e2e2e',
+                      borderRadius: 2,
+                      padding: 3,
+                      color: 'white',
+                    },
+                  },
+                }}
+              >
+                <div className="gridDialog">
+                  <button>Start Quiz</button>
+                  <br />
+                  <button>Delete Quiz</button>
+                </div>
+              </Dialog>
 
               <br />
               <br />

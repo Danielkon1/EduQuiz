@@ -40,7 +40,7 @@ function Game() {
           setHasQuestionChanged(true);
         }
         setCurrentQuestion(Number(response));
-      }, 500);
+      }, 100);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);

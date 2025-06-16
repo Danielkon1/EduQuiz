@@ -80,8 +80,8 @@ def create_bad_json_response():
         f"{encrypted_response}"
     )
 
-def create_server_error_response():
-    encrypted_response = encrypt_response("Internal server error")
+def create_server_error_response(body: str):
+    encrypted_response = encrypt_response(body)
     return (
         "HTTP/1.1 500 Internal Server Error\r\n"
         "Content-Type: text/plain\r\n"

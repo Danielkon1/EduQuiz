@@ -104,11 +104,11 @@ class MongoDB:
                             "winner_score": score
                         }}
                     )
-                elif int(score) == int(current_high_score):
+                elif int(score) == int(current_high_score) and int(score) != 0:
                     collection.update_one(
                         {"code": game_code},
                         {"$set": {
-                            "winner": (quiz.get("winner") + name),
+                            "winner": (quiz.get("winner") + " and " + name),
                             "winner_score": score
                         }}
                     )

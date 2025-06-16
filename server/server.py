@@ -90,7 +90,7 @@ def handle_http_request(method: str, path: str, request: str):
                     json_response.insert(0, {"code": code })
 
                     http_response = create_json_success_response(json.dumps(json_response))
-                
+
                 elif path.startswith("/add_user"):
                     username = data.get("username")
                     password = data.get("hashedPass")
@@ -107,7 +107,7 @@ def handle_http_request(method: str, path: str, request: str):
 
                 elif path.startswith("/login"):
                     username = data.get("username")
-                    password = data.get("password")
+                    password = data.get("hashedPass")
 
                     if database.is_user_in_db(username, password):
                         http_response = create_success_response(f"User {username} logged in!")
@@ -164,7 +164,7 @@ def handle_http_request(method: str, path: str, request: str):
 
             except Exception as e:
                 print(f"error during POST: {e}")
-                http_response = create_server_error_response()
+                http_response = create_server_error_response(str(e))
         
         case "GET":
             try:
