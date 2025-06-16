@@ -3,6 +3,7 @@ import "./design.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postRequest } from "../api";
+import { sha256 } from "../config";
 
 export const user = {
   username: "",
@@ -13,11 +14,24 @@ function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const unallowedUserNames = ["", "users"];
+  const unallowedPasswords = [""];
 
   const handleRequest = async (mode: "signup" | "login") => {
     try {
+      const isUsernameNotAllowed = unallowedUserNames.includes(username);
+      const isPasswordNotAllowed = unallowedPasswords.includes(password);
+      if (isUsernameNotAllowed && isPasswordNotAllowed) {
+        throw new Error("Both username and password are not allowed");
+      } else if (isUsernameNotAllowed) {
+        throw new Error("Username not allowed");
+      } else if (isPasswordNotAllowed) {
+        throw new Error("Password not allowed");
+      }
+      const hashedPass = await sha256(password);
       const endpoint = mode === "signup" ? "/add_user" : "/login";
-      const data = { username, password };
+      
+      const data = { username, hashedPass };
 
       await postRequest(endpoint, data);
 
@@ -36,7 +50,9 @@ function SignUp() {
 
   useEffect(() => {
     if (isUsingSmallScreen()) {
-      alert("The following pages are recommended to be used from a device with a larger screen (not phone)");
+      alert(
+        "The following pages are recommended to be used from a device with a larger screen (not phone)"
+      );
     }
   }, []);
 

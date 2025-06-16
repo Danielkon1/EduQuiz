@@ -93,7 +93,10 @@ def handle_http_request(method: str, path: str, request: str):
                 
                 elif path.startswith("/add_user"):
                     username = data.get("username")
-                    password = data.get("password")
+                    password = data.get("hashedPass")
+
+                    print("password is:", password)
+                    print(type(password))
                     
                     insertion_result = database.insert_user(username, password)
                     
