@@ -92,7 +92,7 @@ function Game() {
       {(httpResponse !== "True" && (
         <>
           <TextField
-            label="game code"
+            label="Game Code"
             variant="outlined"
             className="custom-text-field"
             onChange={(e) => setGameCode(e.target.value)}
@@ -100,7 +100,7 @@ function Game() {
           <br />
           <br />
           <TextField
-            label="nickname"
+            label="Nickname"
             variant="outlined"
             className="custom-text-field"
             onChange={(e) => setNickname(e.target.value)}
@@ -113,8 +113,8 @@ function Game() {
       )) ||
         (currentQuestion >= 1 && (
           <>
-            <h2>current question: {currentQuestion}</h2>
-            <h2>current score: {currentScore}</h2>
+            <h2>Current Question: {currentQuestion}</h2>
+            <h2>Current Score: {currentScore}</h2>
             <br />
             <div
               style={{
@@ -160,12 +160,12 @@ function Game() {
                 submitResults(gameCode, String(currentScore), nickname)
               }
             >
-              submit results / leave quiz
+              Submit Results / Leave Quiz
             </button>
           </>
         )) || (
           <>
-            <h1>Waiting for host to start the game</h1>
+            <h1>Waiting For Host to Start The Game</h1>
           </>
         )}
     </>

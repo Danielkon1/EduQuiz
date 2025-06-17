@@ -77,6 +77,7 @@ function GameCreation() {
     <>
       <AppBar className="userAppBar">
         <div className="appBarContent">
+          <img src="/MainLogo.png" className="mainLogo" />
           <div className="leftContent">
             <div className="stickTopLeft">
               <IconButton onClick={() => navigate("/user")}>
@@ -88,14 +89,14 @@ function GameCreation() {
             </div>
           </div>
 
-          <h2>EduQuiz - Game Creation</h2>
+          <h2>Game Creation</h2>
         </div>
       </AppBar>
 
       {(finalQuizName === "" && (
         <>
           <TextField
-            label={"enter quiz name"}
+            label={"Enter Quiz Name"}
             variant="outlined"
             className="custom-text-field"
             multiline
@@ -109,10 +110,10 @@ function GameCreation() {
         </>
       )) || (
         <>
-          <h1>question number {currentQuestionNumber}</h1>
+          <h1>Question Number {currentQuestionNumber}</h1>
           <br />
           <TextField
-            label={"enter question"}
+            label={"Question"}
             variant="outlined"
             className="custom-text-field"
             multiline
@@ -127,7 +128,7 @@ function GameCreation() {
           <br />
           <br />
           <TextField
-            label={"enter answer 1"}
+            label={"Answer 1"}
             variant="outlined"
             className="custom-text-field"
             multiline
@@ -140,7 +141,7 @@ function GameCreation() {
             }
           />
           <TextField
-            label={"enter answer 2"}
+            label={"Answer 2"}
             variant="outlined"
             className="custom-text-field"
             multiline
@@ -153,7 +154,7 @@ function GameCreation() {
             }
           />
           <TextField
-            label={"enter answer 3"}
+            label={"Answer 3"}
             variant="outlined"
             className="custom-text-field"
             multiline
@@ -166,7 +167,7 @@ function GameCreation() {
             }
           />
           <TextField
-            label={"enter answer 4"}
+            label={"Answer 4"}
             variant="outlined"
             className="custom-text-field"
             multiline
@@ -181,7 +182,7 @@ function GameCreation() {
           <br />
           <br />
           <TextField
-            label={"enter number of correct answer"}
+            label={"Number of Correct Answer"}
             variant="outlined"
             className="custom-text-field"
             type="number"

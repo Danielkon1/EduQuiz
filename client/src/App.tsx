@@ -12,16 +12,16 @@ function App() {
       </AppBar>
 
 
-      <h2>Welcome to EduQuiz</h2>
       <h2>Select Option</h2>
-      <Button variant="outlined" className="outlinedButtons">
-        <a href="/signup">Sign up / Log in</a>
-      </Button>
+      
+      <button>
+        <a href="/signup">Signup/Login</a>
+      </button>
       <br />
       <br />
-      <Button variant="outlined" className="outlinedButtons">
+      <button>
         <a href="/game">Enter Existing Game</a>
-      </Button>
+      </button>
     </>
   );
 }

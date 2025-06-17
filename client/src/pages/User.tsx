@@ -178,18 +178,18 @@ function User() {
             <>
               <h2 className="stickTop">Welcome, {user.username}</h2>
 
-              <Button
-                variant="contained"
+              <button
                 onClick={() => {
                   if (!open) {
                     setOpen(!open);
                   }
                   getQuizzes();
                 }}
-                sx={{ marginBottom: "1rem" }}
               >
                 Load Quizzes
-              </Button>
+              </button>
+              <br />
+              <br />
 
               <Collapse in={open} timeout="auto" unmountOnExit>
                 <div className="quizScrollContainer">

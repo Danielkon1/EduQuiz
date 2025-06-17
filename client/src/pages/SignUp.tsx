@@ -65,7 +65,7 @@ function SignUp() {
         </div>
       </AppBar>
       <div className="signupPageCard">
-        <p>Enter fields</p>
+        <p>Enter Fields</p>
 
         <TextField
           label="Username"
