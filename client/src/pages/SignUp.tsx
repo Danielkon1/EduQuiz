@@ -59,7 +59,10 @@ function SignUp() {
   return (
     <>
       <AppBar>
-        <h2>EduQuiz - Signup/login</h2>
+        <div className="appBarContent">
+          <img src="/MainLogo.png" className="mainLogo" />
+          <h2 className="centerText">Signup/Login</h2>
+        </div>
       </AppBar>
       <div className="signupPageCard">
         <p>Enter fields</p>

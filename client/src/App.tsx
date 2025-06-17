@@ -5,8 +5,13 @@ function App() {
   return (
     <>
       <AppBar>
-        <h2>EduQuiz - Home</h2>
+        <div className="appBarContent">
+          <img src="/MainLogo.png" className="mainLogo" />
+          <h2 className="centerText">Home</h2>
+        </div>
       </AppBar>
+
+
       <h2>Welcome to EduQuiz</h2>
       <h2>Select Option</h2>
       <Button variant="outlined" className="outlinedButtons">

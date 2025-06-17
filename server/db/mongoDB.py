@@ -210,6 +210,11 @@ class MongoDB:
         
         return result
     
+    def delete_quiz(self, quiz_name: str, username: str):
+        collection = self.__get_user_quizzes_collection(username)
+
+        collection.delete_one({"name": quiz_name})
+
     # adds user to users collection
     def insert_user(self, username: str, password: str):
         if self.is_username_in_db(username):

@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
 import { postRequest, getRequest } from "../api";
-import { CheckBox } from "@mui/icons-material";
 export type QuizQuestion = {
   question: string;
   answer1: string;
@@ -87,6 +86,17 @@ function User() {
     }
   };
 
+  const deleteQuiz = async (quizName: string, username: string) => {
+    try {
+      const endpoint = `/delete_quiz`;
+      const data = { quizName, username };
+
+      await postRequest(endpoint, data);
+    } catch (error) {
+      console.error("Error during open_quiz:", error);
+    }
+  };
+
   const startQuiz = async (
     quizName: string,
     username: string,
@@ -141,6 +151,7 @@ function User() {
         <>
           <AppBar className="userAppBar">
             <div className="appBarContent">
+              <img src="/MainLogo.png" className="mainLogo" />
               <div className="leftContent">
                 <div className="stickTopLeft">
                   <IconButton onClick={() => navigate("/signup")}>
@@ -152,7 +163,7 @@ function User() {
                 </div>
               </div>
 
-              <h2>EduQuiz - Welcome, {user.username}</h2>
+              <h2>Welcome, {user.username}</h2>
               {!isInQuiz && (
                 <>
                   <Link to="/create-game">
@@ -192,10 +203,10 @@ function User() {
                               <div
                                 key={index}
                                 className="quizItem"
-                                onClick={
-                                  () => setIsDialogPopUpOpen(true)
-                                  // openQuiz(quizName, user.username)
-                                }
+                                onClick={() => {
+                                  setIsDialogPopUpOpen(true);
+                                  setQuizName(quizName);
+                                }}
                               >
                                 {quizName}
                               </div>
@@ -213,18 +224,27 @@ function User() {
                 slotProps={{
                   paper: {
                     sx: {
-                      backgroundColor: '#2e2e2e',
+                      backgroundColor: "#2e2e2e",
                       borderRadius: 2,
                       padding: 3,
-                      color: 'white',
+                      color: "white",
                     },
                   },
                 }}
               >
                 <div className="gridDialog">
-                  <button>Start Quiz</button>
+                  <button onClick={() => openQuiz(quizName, user.username)}>
+                    Start Quiz
+                  </button>
                   <br />
-                  <button>Delete Quiz</button>
+                  <button
+                    onClick={() => {
+                      deleteQuiz(quizName, user.username);
+                      setIsDialogPopUpOpen(false);
+                    }}
+                  >
+                    Delete Quiz
+                  </button>
                 </div>
               </Dialog>
 

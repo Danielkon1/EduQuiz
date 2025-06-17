@@ -66,6 +66,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-left: 16%;
 }
 
 .stickTopLeft {
@@ -168,4 +169,25 @@
   margin: 8px 0;
   /* border-radius: 4px; */
   cursor: pointer;
+}
+
+.appBarContent {
+  position: relative;
+  height: 64px;
+}
+
+.mainLogo {
+  height: 50px;
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.centerText {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
 }

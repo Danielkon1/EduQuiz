@@ -158,7 +158,14 @@ def handle_http_request(method: str, path: str, request: str):
 
                     http_response = create_success_response(str(database.add_quiz(name, content, username)))
 
-                
+                elif path.startswith("/delete_quiz"):
+                    quiz_name = data.get("quizName")
+                    username = data.get("username")
+
+                    database.delete_quiz(quiz_name, username)
+
+                    http_response = create_success_response("quiz deleted")
+
                 else:
                     http_response = create_not_found_response()
 
