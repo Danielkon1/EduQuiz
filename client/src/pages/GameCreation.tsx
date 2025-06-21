@@ -11,10 +11,14 @@ import { postRequest } from "../api";
 function GameCreation() {
   const navigate = useNavigate();
 
+  // States for quiz setup
   const [quizName, setQuizName] = useState("");
   const [finalQuizName, setFinalQuizName] = useState("");
+
   const [quiz, setQuiz] = useState<QuizQuestion[]>();
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>(1);
+
+  // State for current question being edited
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion>({
     question: "",
     answer1: "",
@@ -24,6 +28,7 @@ function GameCreation() {
     correct: "1",
   });
 
+  // Add current question to quiz and reset input
   const addQuestion = () => {
     if (
       Number(currentQuestion.correct) < 1 ||
@@ -39,6 +44,7 @@ function GameCreation() {
       setQuiz([...quiz, currentQuestion]);
     }
 
+    // Reset for next question
     setCurrentQuestion({
       question: "",
       answer1: "",
@@ -51,6 +57,7 @@ function GameCreation() {
     setCurrentQuestionNumber(currentQuestionNumber + 1);
   };
 
+  // Send full quiz to the server
   const sendQuiz = async () => {
     try {
       const endpoint = `/add_quiz`;
@@ -67,6 +74,7 @@ function GameCreation() {
     }
   };
 
+  // Redirect if not logged in
   useEffect(() => {
     if (user.username === "" || user.password === "") {
       navigate("/");
@@ -75,6 +83,7 @@ function GameCreation() {
 
   return (
     <>
+      {/* Top bar with navigation */}
       <AppBar className="userAppBar">
         <div className="appBarContent">
           <img src="/MainLogo.png" className="mainLogo" />
@@ -93,6 +102,7 @@ function GameCreation() {
         </div>
       </AppBar>
 
+      {/* Quiz Name input phase */}
       {(finalQuizName === "" && (
         <>
           <TextField
@@ -108,104 +118,107 @@ function GameCreation() {
             Confirm Name
           </button>
         </>
-      )) || (
-        <>
-          <h1>Question Number {currentQuestionNumber}</h1>
-          <br />
-          <TextField
-            label={"Question"}
-            variant="outlined"
-            className="custom-text-field"
-            multiline
-            value={currentQuestion.question}
-            onChange={(e) =>
-              setCurrentQuestion({
-                ...currentQuestion,
-                question: e.target.value,
-              })
-            }
-          />
-          <br />
-          <br />
-          <TextField
-            label={"Answer 1"}
-            variant="outlined"
-            className="custom-text-field"
-            multiline
-            value={currentQuestion.answer1}
-            onChange={(e) =>
-              setCurrentQuestion({
-                ...currentQuestion,
-                answer1: e.target.value,
-              })
-            }
-          />
-          <TextField
-            label={"Answer 2"}
-            variant="outlined"
-            className="custom-text-field"
-            multiline
-            value={currentQuestion.answer2}
-            onChange={(e) =>
-              setCurrentQuestion({
-                ...currentQuestion,
-                answer2: e.target.value,
-              })
-            }
-          />
-          <TextField
-            label={"Answer 3"}
-            variant="outlined"
-            className="custom-text-field"
-            multiline
-            value={currentQuestion.answer3}
-            onChange={(e) =>
-              setCurrentQuestion({
-                ...currentQuestion,
-                answer3: e.target.value,
-              })
-            }
-          />
-          <TextField
-            label={"Answer 4"}
-            variant="outlined"
-            className="custom-text-field"
-            multiline
-            value={currentQuestion.answer4}
-            onChange={(e) =>
-              setCurrentQuestion({
-                ...currentQuestion,
-                answer4: e.target.value,
-              })
-            }
-          />
-          <br />
-          <br />
-          <TextField
-            label={"Number of Correct Answer"}
-            variant="outlined"
-            className="custom-text-field"
-            type="number"
-            inputProps={{
-              min: 1,
-              max: 4,
-            }}
-            value={Number(currentQuestion.correct)}
-            onChange={(e) =>
-              setCurrentQuestion({
-                ...currentQuestion,
-                correct: e.target.value,
-              })
-            }
-          />
-          <br />
-          <br />
-          <button onClick={addQuestion}>Add Question</button>
-          <br />
-          <br />
-          <button onClick={sendQuiz}>Finish Quiz</button>
-        </>
-      )}
+      )) ||
+
+        // Question creation phase
+        (
+          <>
+            <h1>Question Number {currentQuestionNumber}</h1>
+            <br />
+            <TextField
+              label={"Question"}
+              variant="outlined"
+              className="custom-text-field"
+              multiline
+              value={currentQuestion.question}
+              onChange={(e) =>
+                setCurrentQuestion({
+                  ...currentQuestion,
+                  question: e.target.value,
+                })
+              }
+            />
+            <br />
+            <br />
+            <TextField
+              label={"Answer 1"}
+              variant="outlined"
+              className="custom-text-field"
+              multiline
+              value={currentQuestion.answer1}
+              onChange={(e) =>
+                setCurrentQuestion({
+                  ...currentQuestion,
+                  answer1: e.target.value,
+                })
+              }
+            />
+            <TextField
+              label={"Answer 2"}
+              variant="outlined"
+              className="custom-text-field"
+              multiline
+              value={currentQuestion.answer2}
+              onChange={(e) =>
+                setCurrentQuestion({
+                  ...currentQuestion,
+                  answer2: e.target.value,
+                })
+              }
+            />
+            <TextField
+              label={"Answer 3"}
+              variant="outlined"
+              className="custom-text-field"
+              multiline
+              value={currentQuestion.answer3}
+              onChange={(e) =>
+                setCurrentQuestion({
+                  ...currentQuestion,
+                  answer3: e.target.value,
+                })
+              }
+            />
+            <TextField
+              label={"Answer 4"}
+              variant="outlined"
+              className="custom-text-field"
+              multiline
+              value={currentQuestion.answer4}
+              onChange={(e) =>
+                setCurrentQuestion({
+                  ...currentQuestion,
+                  answer4: e.target.value,
+                })
+              }
+            />
+            <br />
+            <br />
+            <TextField
+              label={"Number of Correct Answer"}
+              variant="outlined"
+              className="custom-text-field"
+              type="number"
+              inputProps={{
+                min: 1,
+                max: 4,
+              }}
+              value={Number(currentQuestion.correct)}
+              onChange={(e) =>
+                setCurrentQuestion({
+                  ...currentQuestion,
+                  correct: e.target.value,
+                })
+              }
+            />
+            <br />
+            <br />
+            <button onClick={addQuestion}>Add Question</button>
+            <br />
+            <br />
+            <button onClick={sendQuiz}>Finish Quiz</button>
+          </>
+        )}
     </>
   );
 }

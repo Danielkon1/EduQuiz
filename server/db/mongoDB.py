@@ -1,3 +1,7 @@
+"""
+    This file contains an object class for mongoDB.
+    The server initiates this object and uses it to communicate with the database.
+"""
 from pymongo import MongoClient
 import random
 import string
@@ -5,11 +9,10 @@ import json
 
 class MongoDB:
     # connects to db and creates instance
-    def __init__(self, uri: str, db_name: str, users_collection_name: str, quizzes_collection_name: str, score_multiplier: int):
+    def __init__(self, uri: str, db_name: str, users_collection_name: str, score_multiplier: int):
         self.client = MongoClient(uri)
         self.db = self.client.get_database(db_name)
         self.users_collection_name = users_collection_name
-        self.quizzes_collection_name = quizzes_collection_name
         self.score_multiplier = score_multiplier
     
     # returns the collection that stores user info (usernames, passwords)
@@ -210,6 +213,7 @@ class MongoDB:
         
         return result
     
+    # deletes a quiz from a user's collection
     def delete_quiz(self, quiz_name: str, username: str):
         collection = self.__get_user_quizzes_collection(username)
 

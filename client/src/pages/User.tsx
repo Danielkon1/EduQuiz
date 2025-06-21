@@ -1,4 +1,4 @@
-import { AppBar, Button, Collapse, Dialog, IconButton } from "@mui/material";
+import { AppBar, Collapse, Dialog, IconButton } from "@mui/material";
 import { user } from "./Signup";
 import { useEffect, useRef, useState } from "react";
 import "./design.css";
@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
 import { postRequest, getRequest } from "../api";
+
+// Define the shape of a quiz question
 export type QuizQuestion = {
   question: string;
   answer1: string;
@@ -19,6 +21,7 @@ function User() {
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // App state
   const [open, setOpen] = useState(false);
   const [isInQuiz, setIsInQuiz] = useState(false);
   const [quizList, setQuizList] = useState([]);
@@ -29,30 +32,31 @@ function User() {
   const [winner, setWinner] = useState("");
   const [isDialogPopUpOpen, setIsDialogPopUpOpen] = useState(false);
 
+  // Helper to get a random background music track for each question
   const getRandomInGameSong = () => {
     return `InGame${Math.floor(Math.random() * 3 + 1)}.mp3`;
   };
 
+  // Ensure user is logged in (in case someone just types https://.../user)
   useEffect(() => {
     if (user.username === "" || user.password === "") {
       navigate("/");
     }
   }, []);
 
+  // Play music based on quiz state
   useEffect(() => {
     let src = "";
     if (currentQuestion === 0 && isInQuiz) {
       src = "/music/LobbyMusic.mp3";
-    } else if (
-      currentQuestion > 0 &&
-      currentQuestion < quizContent.length + 1
-    ) {
+    } else if (currentQuestion > 0 && currentQuestion < quizContent.length + 1) {
       src = `/music/${getRandomInGameSong()}`;
     } else if (currentQuestion >= quizContent.length + 1 && winner === "") {
       src = "/music/LobbyMusic.mp3";
     } else if (winner !== "") {
       src = "/music/Winner.mp3";
     }
+
     if (audioRef.current) {
       if (audioRef.current.src !== window.location.origin + src) {
         audioRef.current.src = src;
@@ -61,21 +65,21 @@ function User() {
     }
   }, [currentQuestion, isInQuiz, quizContent.length, winner]);
 
+  // Fetch the user's quiz list
   const getQuizzes = async () => {
     const endpoint = `/quiz_list`;
     const params = `username=${user.username}`;
     const response = await getRequest(endpoint, params);
-
     setQuizList(response);
   };
 
+  // Load a selected quiz and prepare the game state
   const openQuiz = async (quizName: string, username: string) => {
     try {
       const endpoint = `/open_quiz`;
       const data = { quizName, username };
 
       const content = await postRequest(endpoint, data);
-
       setGameCode(content[0].code);
       const slicedContent = content.slice(1);
       setQuizContent(slicedContent);
@@ -86,6 +90,7 @@ function User() {
     }
   };
 
+  // Delete a selected quiz
   const deleteQuiz = async (quizName: string, username: string) => {
     try {
       const endpoint = `/delete_quiz`;
@@ -93,10 +98,11 @@ function User() {
 
       await postRequest(endpoint, data);
     } catch (error) {
-      console.error("Error during open_quiz:", error);
+      console.error("Error during delete_quiz:", error);
     }
   };
 
+  // Start quiz
   const startQuiz = async (
     quizName: string,
     username: string,
@@ -104,20 +110,19 @@ function User() {
   ) => {
     try {
       const endpoint = `/start_game`;
-
       const data = { quizName, username, firstAnswer };
 
       await postRequest(endpoint, data);
-
       setCurrentQuestion(1);
     } catch (error) {
       console.error("Error during start_game: ", error);
     }
   };
 
+  // Move to the next question and notify the server
   const nextQuestion = async (currentQuestionObject: QuizQuestion) => {
     try {
-      if (typeof currentQuestionObject != "undefined") {
+      if (typeof currentQuestionObject !== "undefined") {
         const endpoint = `/next_question`;
         const username = user.username;
         const currentAnswer = currentQuestionObject.correct;
@@ -125,13 +130,13 @@ function User() {
 
         await postRequest(endpoint, data);
       }
-
       setCurrentQuestion(currentQuestion + 1);
     } catch (error) {
-      console.error("Error during start_game: ", error);
+      console.error("Error during next_question: ", error);
     }
   };
 
+  // Fetch results at the end of the quiz
   const fetchResults = async () => {
     try {
       const endpoint = `/fetch_results`;
@@ -147,6 +152,8 @@ function User() {
   return (
     <>
       <audio ref={audioRef} loop hidden />
+
+      {/* Initial screen with quiz list or start quiz */}
       {(currentQuestion === 0 && (
         <>
           <AppBar className="userAppBar">
@@ -165,32 +172,26 @@ function User() {
 
               <h2>Welcome, {user.username}</h2>
               {!isInQuiz && (
-                <>
-                  <Link to="/create-game">
-                    <button>Create Game</button>
-                  </Link>
-                </>
+                <Link to="/create-game">
+                  <button>Create Game</button>
+                </Link>
               )}
             </div>
           </AppBar>
 
-          {(!isInQuiz && (
+          {/* Quiz Selection */}
+          {!isInQuiz ? (
             <>
               <h2 className="stickTop">Welcome, {user.username}</h2>
-
               <button
                 onClick={() => {
-                  if (!open) {
-                    setOpen(!open);
-                  }
+                  if (!open) setOpen(true);
                   getQuizzes();
                 }}
               >
                 Load Quizzes
               </button>
               <br />
-              <br />
-
               <Collapse in={open} timeout="auto" unmountOnExit>
                 <div className="quizScrollContainer">
                   <div className="quizGrid">
@@ -218,6 +219,7 @@ function User() {
                 </div>
               </Collapse>
 
+              {/* Dialog for Start/Delete Quiz */}
               <Dialog
                 open={isDialogPopUpOpen}
                 onClose={() => setIsDialogPopUpOpen(false)}
@@ -247,15 +249,10 @@ function User() {
                   </button>
                 </div>
               </Dialog>
-
-              <br />
-              <br />
             </>
-          )) || (
+          ) : (
             <>
               <h1>game code is - {gameCode}</h1>
-              <br />
-              <br />
               <button
                 onClick={() =>
                   startQuiz(quizName, user.username, quizContent[0].correct)
@@ -267,39 +264,33 @@ function User() {
           )}
         </>
       )) ||
+
+        // Quiz in progress
         (currentQuestion < quizContent.length + 1 && (
           <>
             <h1>{quizContent[currentQuestion - 1].question}</h1>
-
-            <h2 className="question1">
-              1 - {quizContent[currentQuestion - 1].answer1}
-            </h2>
-            <h2 className="question2">
-              2 - {quizContent[currentQuestion - 1].answer2}
-            </h2>
-            <h2 className="question3">
-              3 - {quizContent[currentQuestion - 1].answer3}
-            </h2>
-            <h2 className="question4">
-              4 - {quizContent[currentQuestion - 1].answer4}
-            </h2>
+            <h2 className="question1">1 - {quizContent[currentQuestion - 1].answer1}</h2>
+            <h2 className="question2">2 - {quizContent[currentQuestion - 1].answer2}</h2>
+            <h2 className="question3">3 - {quizContent[currentQuestion - 1].answer3}</h2>
+            <h2 className="question4">4 - {quizContent[currentQuestion - 1].answer4}</h2>
 
             <button
-              onClick={() => {
-                nextQuestion(quizContent[currentQuestion]);
-              }}
+              onClick={() => nextQuestion(quizContent[currentQuestion])}
             >
               Next Question
             </button>
           </>
-        )) || (
+        )) ||
+
+        // End of quiz
+        (
           <>
-            {(winner === "" && (
+            {winner === "" ? (
               <>
                 <h1>Finished quiz, please wait for results.</h1>
                 <button onClick={fetchResults}>fetch results</button>
               </>
-            )) || (
+            ) : (
               <>
                 <h1>winner is: {winner}</h1>
                 <button

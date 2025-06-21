@@ -1,6 +1,9 @@
 import "./App.css";
 import { AppBar, Button } from "@mui/material";
 
+/**
+ * Home page of the app, includes buttons that lead to signup/login page and game participation page
+ */
 function App() {
   return (
     <>
@@ -11,9 +14,8 @@ function App() {
         </div>
       </AppBar>
 
-
       <h2>Select Option</h2>
-      
+
       <button>
         <a href="/signup">Signup/Login</a>
       </button>

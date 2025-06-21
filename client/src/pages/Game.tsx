@@ -6,48 +6,54 @@ import { useNavigate } from "react-router-dom";
 
 function Game() {
   const navigate = useNavigate();
+
+  // State for form inputs and gameplay
   const [gameCode, setGameCode] = useState("");
-  const [httpResponse, setHttpResponse] = useState("");
+  const [httpResponse, setHttpResponse] = useState(""); // Result of join request
   const [currentScore, setCurrentScore] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState<number>(-1);
   const [intervalContinueFlag, setIntervalContinueFlag] = useState(true);
   const [nickname, setNickname] = useState("");
   const [hasQuestionChanged, setHasQuestionChanged] = useState(true);
 
+  // Ref to store the polling interval ID
   const intervalRef = useRef<number | null>(null);
 
+  // Try to join the game using the game code
   const joinGame = async (gameCode: string) => {
     try {
       const endpoint = `/join_game`;
       const data = { gameCode };
 
       const content = await postRequest(endpoint, data);
-
-      setHttpResponse(content);
+      setHttpResponse(content); // Expecting "True" or error message
     } catch (error) {
       console.error("Error during join_game:", error);
     }
   };
 
+  // Poll server for the current question number
   useEffect(() => {
     if (httpResponse === "True" && intervalContinueFlag) {
-      intervalRef.current = setInterval(async () => {
+      intervalRef.current = window.setInterval(async () => {
         const endpoint = `/game_status`;
         const params = `code=${gameCode}`;
         const response = await getRequest(endpoint, params);
 
         if (Number(response) !== currentQuestion) {
-          setHasQuestionChanged(true);
+          setHasQuestionChanged(true); // Enable answering if question has changed
         }
         setCurrentQuestion(Number(response));
-      }, 100);
+      }, 200); // Poll every 200ms
     } else {
+      // Clear interval if game is not active
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
     }
 
+    // Cleanup on component unmount
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -56,6 +62,7 @@ function Game() {
     };
   }, [currentQuestion, gameCode, httpResponse, intervalContinueFlag]);
 
+  // Submit an answer if question has changed
   const submitAnswer = async (gameCode: string, currentAnswer: number) => {
     try {
       if (hasQuestionChanged) {
@@ -65,12 +72,14 @@ function Game() {
 
         const response = await postRequest(endpoint, data);
         setCurrentScore(currentScore + Number(response));
-        setHasQuestionChanged(false);
+        setHasQuestionChanged(false); // Disable further answers until question changes
       }
     } catch (error) {
       console.error("Error during answer_question:", error);
     }
   };
+
+  // Submit final score and navigate home
   const submitResults = async (
     gameCode: string,
     score: string,
@@ -81,14 +90,16 @@ function Game() {
       const data = { gameCode, score, name };
 
       await postRequest(endpoint, data);
-      setIntervalContinueFlag(false);
+      setIntervalContinueFlag(false); // Stop polling
       navigate("/");
     } catch (error) {
       console.error("Error during submit_results:", error);
     }
   };
+
   return (
     <>
+      {/* Game Join Screen */}
       {(httpResponse !== "True" && (
         <>
           <TextField
@@ -111,6 +122,8 @@ function Game() {
           <h1>{httpResponse}</h1>
         </>
       )) ||
+
+        // Quiz Screen (if question has started)
         (currentQuestion >= 1 && (
           <>
             <h2>Current Question: {currentQuestion}</h2>
@@ -123,6 +136,7 @@ function Game() {
                 justifyContent: "center",
               }}
             >
+              {/* Answer buttons (1-4) */}
               <button
                 className={hasQuestionChanged ? "answer1" : "disabledAnswer1"}
                 disabled={!hasQuestionChanged}
@@ -163,7 +177,10 @@ function Game() {
               Submit Results / Leave Quiz
             </button>
           </>
-        )) || (
+        )) ||
+
+        // Waiting for host to start the game
+        (
           <>
             <h1>Waiting For Host to Start The Game</h1>
           </>

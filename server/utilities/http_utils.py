@@ -1,3 +1,7 @@
+"""
+    This file contains all http responses that the server sends to the client.
+    Each function receives the message body and adds it, encrypted, to the full response.
+"""
 import json
 from utilities.crypto_utils import encrypt_aes_gcm
 

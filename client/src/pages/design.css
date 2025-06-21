@@ -1,28 +1,38 @@
+/* -------------------------
+   General Input Styles (TextFields)
+-------------------------- */
+
+.custom-text-field {
+  width: 200px;
+}
+
 .custom-text-field .MuiOutlinedInput-root {
   color: lightgray;
 }
+
 .custom-text-field .MuiOutlinedInput-root fieldset {
   border-color: lightgray;
 }
+
 .custom-text-field .MuiOutlinedInput-root:hover fieldset {
   border-color: lightgray;
 }
+
 .custom-text-field .MuiOutlinedInput-root.Mui-focused fieldset {
   border-color: lightgray;
-}
-.ListItemButton {
-  border: 1px solid #B0B0B0 !important;
 }
 
 .custom-text-field .MuiInputLabel-root {
   color: lightgray;
 }
+
 .custom-text-field .MuiInputLabel-root.Mui-focused {
   color: lightgray;
 }
-.custom-text-field {
-  width: 200px;
-}
+
+/* -------------------------
+   Buttons
+-------------------------- */
 
 .padButtons button {
   margin-right: 10px;
@@ -32,11 +42,63 @@
   margin-right: 0;
 }
 
+.ListItemButton {
+  border: 1px solid #B0B0B0 !important;
+}
+
+/* -------------------------
+   Layout and Positioning
+-------------------------- */
 
 .stickTop {
   position: fixed;
   top: 2%;
 }
+
+.stickTopLeft {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.leftContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 16%;
+}
+
+.userAppBar {
+  padding: 0.25rem 0.5rem;
+  min-height: unset;
+}
+
+.appBarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  height: 64px;
+}
+
+.mainLogo {
+  height: 50px;
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.centerText {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+/* -------------------------
+   Signup Page Styling
+-------------------------- */
 
 .signupPageCard {
   background-color: #494949;
@@ -50,29 +112,9 @@
   flex-direction: column;
 }
 
-.userAppBar {
-  padding: 0.25rem 0.5rem;
-  min-height: unset;
-}
-
-
-.appBarContent {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.leftContent {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-left: 16%;
-}
-
-.stickTopLeft {
-  display: flex;
-  gap: 0.5rem;
-}
+/* -------------------------
+   Quiz List (User Page)
+-------------------------- */
 
 .quizScrollContainer {
   overflow-x: auto;
@@ -107,18 +149,26 @@
   background-color: #3a3a3a;
 }
 
+/* -------------------------
+   Question/Answer Styling
+-------------------------- */
+
 .question1 {
   color: #EF4444 !important;
 }
+
 .question2 {
   color: #22C55E !important;
 }
+
 .question3 {
   color: #EAB308 !important;
 }
+
 .question4 {
   color: #3B82F6 !important;
 }
+
 .answer1,
 .answer2,
 .answer3,
@@ -151,6 +201,9 @@
 .answer4 { background-color: #3b83f6 !important; }
 .disabledAnswer4 { background-color: #3b83f68b !important; }
 
+/* -------------------------
+   Dialog Styling
+-------------------------- */
 
 .gridDialog {
   background-color: #2e2e2e;
@@ -167,27 +220,5 @@
   border: none;
   padding: 12px 24px;
   margin: 8px 0;
-  /* border-radius: 4px; */
   cursor: pointer;
-}
-
-.appBarContent {
-  position: relative;
-  height: 64px;
-}
-
-.mainLogo {
-  height: 50px;
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.centerText {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
 }

@@ -1,15 +1,16 @@
-
+"""
+    This file contains general constants the server's files use.
+"""
 # db
-uri = "mongodb+srv://KahootDBUser:danielkon@cluster0.0bmdoqw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-db_name = "mydatabase"
-users_collection_name = "users"
-quizzes_collection_name = "quizzes"
+DB_URI = "mongodb+srv://KahootDBUser:danielkon@cluster0.0bmdoqw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+DB_NAME = "mydatabase"
+DB_USERS_COLLECTION_NAME = "users"
 
-score_multiplier = 2
+DB_SCORE_MULTIPLIER = 2
 
 # server
-address = '0.0.0.0'
-port = 4443
+SERVER_ADDRESS = '0.0.0.0'
+SERVER_PORT = 4443
 
-encryption_key = b"2200333911532491"
+ENCRYPTION_KEY = b"2200333911532491"
 
